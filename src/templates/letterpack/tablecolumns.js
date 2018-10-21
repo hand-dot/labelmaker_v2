@@ -40,7 +40,7 @@ export default [
     type: 'text',
   },
   {
-    title: '[From]品名',
+    title: '品名',
     data: 'desc',
     type: 'text',
   },
