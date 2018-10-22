@@ -134,10 +134,10 @@ class App extends Component {
           style={{ padding: '10px 0' }}
         >
           <Grid item xs={12} sm={5}>
-            <Typography variant="caption">
+            <Typography style={{ marginLeft: 5 }} variant="caption">
               ・
               <strong>Chrome,Safari,Firefox</strong>
-              で動作し、入力情報を送信しないため安全。
+              で動作し入力情報を送信しないため安全。
               <br />
               ・エクセルと同等の操作やショートカット利用可能。
               <br />
@@ -145,7 +145,7 @@ class App extends Component {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
-            <Typography variant="caption">
+            <Typography style={{ marginLeft: 5 }} variant="caption">
               ＊全角数字利用不可
               <br />
               ＊郵便番号は半角数字7桁
