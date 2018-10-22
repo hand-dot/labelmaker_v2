@@ -107,7 +107,7 @@ class App extends Component {
             <Typography variant="caption">
               ・
               <strong>Chrome,Safari,Firefox</strong>
-              で動作し、個人情報を送信しません。
+              で動作し、入力情報を送信しないため安全です。
               <br />
               ・エクセルと同等の操作やショートカット利用可能。
               <br />
