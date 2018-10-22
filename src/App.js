@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Notifications from '@material-ui/icons/Notifications';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
 import './styles/handsontable-custom.css';
 import templates from './templates';
 
 import pdfUtil from './utils/pdf';
+
+const styles = {
+  root: {
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+};
 
 class App extends Component {
   constructor(props) {
@@ -52,8 +68,20 @@ class App extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <div>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
+              レターパック ラベルを一気に作成！
+            </Typography>
+            <IconButton color="inherit">
+              <Notifications />
+              <span style={{ position: 'absolute', left: 15, top: 15 }} id="changelog" />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
         <Grid
           container
           alignContent="center"
@@ -62,7 +90,6 @@ class App extends Component {
           style={{ padding: '0 5px' }}
         >
           <Grid item xs={12}>
-            <h1 style={{ fontSize: '1.3rem' }}>レターパック ラベルを一気に作成！</h1>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ fontSize: '0.8rem', margin: 5, display: 'inline-block' }}>モチベーション維持のため拡散や紹介してくれると嬉しいです。</p>
               <a style={{ marginTop: 10 }} href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="twitter-share-button" data-show-count="false">Tweet</a>
@@ -94,4 +121,8 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired, // eslint-disable-line 
+};
+
+export default withStyles(styles)(App);
