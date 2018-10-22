@@ -95,7 +95,7 @@ class App extends Component {
     if (this.hotInstance) {
       const notNullData = extractNullData(this.hotInstance.getSourceData());
       if (notNullData.length === 0) {
-        alert('入力がありません。');
+        alert('入力がありません。\n出来上がりを確認したい場合はサンプルを読み込んでもう一度作成して下さい。');
         return;
       }
       const blob = await pdfUtil.create(notNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
@@ -183,9 +183,9 @@ class App extends Component {
               </Typography>
             </div>
             <Typography id="created-modal-description">
-              使ってくれてありがとう！
+              使ってくれてありがとう！あとはA4で印刷すればOK！
               <br />
-              よかったら同僚や友達に紹介して欲しいです!
+              気に入ってもらえたら同僚や友達に紹介して欲しいです!
               <br />
               また、右のフィードバックから感想やアイデア,改善の提案なども募集しています🙏
               <br />
