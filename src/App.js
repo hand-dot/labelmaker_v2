@@ -8,30 +8,51 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Notifications from '@material-ui/icons/Notifications';
+import Modal from '@material-ui/core/Modal';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
 import './styles/handsontable-custom.css';
+import './styles/animation.css';
 import templates from './templates';
 
 import pdfUtil from './utils/pdf';
 
-const styles = {
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
   grow: {
     flexGrow: 1,
   },
-};
+  paper: {
+    position: 'absolute',
+    maxWidth: '100%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing.unit * 4,
+    margin: `${theme.spacing.unit * 4}px auto`,
+  },
+});
 
 const extractNullData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key]));
 
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.hotInstance = null;
     this.state = {
+      isOpenModal: false,
       selectedTemplate: 'letterpack',
     };
   }
@@ -47,6 +68,15 @@ class App extends Component {
       dataSchema: templates[selectedTemplate].dataSchema,
     });
   }
+
+  handleOpenModal = () => {
+    this.setState({ isOpenModal: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ isOpenModal: false });
+  };
+
 
   loadSampleData() {
     const { selectedTemplate } = this.state;
@@ -70,17 +100,23 @@ class App extends Component {
       }
       const blob = await pdfUtil.create(notNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
       const url = window.URL.createObjectURL(blob);
-      window.open(url);
+      const pdfWindow = window.open(url);
+      if (pdfWindow) {
+        this.handleOpenModal();
+      } else {
+        alert('PDFが開ませんでした。\nChrome,Safari,Firefoxのいずれかでもう一度やり直してください。');
+      }
     }
   }
 
   render() {
+    const { isOpenModal } = this.state;
     const { classes } = this.props;
     return (
       <div>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="subtitle1" color="inherit" className={classes.grow}>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
               レターパックラベルを一括作成！
             </Typography>
             <IconButton color="inherit">
@@ -97,17 +133,11 @@ class App extends Component {
           justify="space-between"
           style={{ padding: '10px 0' }}
         >
-          {/* <Grid item xs={12}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <p style={{ fontSize: '0.8rem', margin: 5, display: 'inline-block' }}>モチベーション維持のため拡散や紹介してくれると嬉しいです。</p>
-              <a style={{ marginTop: 10 }} href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="twitter-share-button" data-show-count="false">Tweet</a>
-            </div>
-          </Grid> */}
           <Grid item xs={12} sm={5}>
             <Typography variant="caption">
               ・
               <strong>Chrome,Safari,Firefox</strong>
-              で動作し、入力情報を送信しないため安全です。
+              で動作し、入力情報を送信しないため安全。
               <br />
               ・エクセルと同等の操作やショートカット利用可能。
               <br />
@@ -134,6 +164,35 @@ class App extends Component {
           </Grid>
         </Grid>
         <div ref={(node) => { this.hotDom = node; }} />
+        {/* Modal */}
+        <Modal
+          aria-labelledby="created-modal-title"
+          aria-describedby="created-modal-description"
+          open={isOpenModal}
+          onClose={this.handleCloseModal}
+        >
+          <div style={getModalStyle()} className={classes.paper}>
+            <div style={{ display: 'flex', marginBottom: '1rem' }}>
+              <Typography style={{ animation: 'good 0.9s linear 0s 3' }} variant="h5" id="modal-title">
+                <span role="img" aria-label="Help">
+                👍
+                </span>
+              </Typography>
+              <Typography variant="h5" id="modal-title">
+              いいね！
+              </Typography>
+            </div>
+            <Typography id="created-modal-description">
+              使ってくれてありがとう！
+              <br />
+              よかったら同僚や友達に紹介して欲しいです!
+              <br />
+              また、右のフィードバックから感想やアイデア,改善の提案なども募集しています🙏
+              <br />
+
+            </Typography>
+          </div>
+        </Modal>
       </div>
     );
   }
