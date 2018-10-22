@@ -59,31 +59,33 @@ class App extends Component {
           alignContent="center"
           alignItems="center"
           justify="space-between"
-          style={{ marginBottom: 5 }}
+          style={{ padding: '0 5px' }}
         >
-          <Grid item xs={12} sm={5} style={{ textAlign: 'center' }}>
-            <h1 style={{ fontSize: '1.4rem', margin: 0 }}>レターパック ラベルを一気に作成！</h1>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <p style={{ fontSize: '0.6rem', margin: 5, display: 'inline-block' }}>モチベーション維持のため拡散や紹介してくれると嬉しいです。</p>
+          <Grid item xs={12}>
+            <h1 style={{ fontSize: '1.3rem' }}>レターパック ラベルを一気に作成！</h1>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ fontSize: '0.8rem', margin: 5, display: 'inline-block' }}>モチベーション維持のため拡散や紹介してくれると嬉しいです。</p>
               <a style={{ marginTop: 10 }} href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="twitter-share-button" data-show-count="false">Tweet</a>
             </div>
           </Grid>
-          <Grid item xs={12} sm={4} style={{ padding: 10 }}>
-            <p style={{ fontSize: '0.6rem' }}>
-            エクセルと同等の操作が可能です。
+          <Grid item xs={12} sm={9}>
+            <p style={{ fontSize: '0.8rem' }}>
+              <strong>Chrome,Safari,Firefox</strong>
+              で動作し、個人情報を送信しません。
               <br />
-            エクセルからもしくはエクセルへのコピペにも対応しています。
+              エクセルと同等の操作が可能で、alt+Enterで改行や全選択やオートフィルにも対応しています。
               <br />
-              <span style={{ fontSize: '0.45rem', color: '#999', marginTop: 0.5 }}>*全角数字は利用不可なのでご注意</span>
+            また、エクセルからもしくはエクセルへのコピペにも対応しています。
+              <span style={{ fontSize: '0.65rem', color: '#999', marginTop: 0.5 }}>*全角数字利用不可/郵便番号は半角数字7桁</span>
             </p>
           </Grid>
           <Grid item xs={6} sm={2}>
-            <button style={{ padding: 10 }} type="button" onClick={this.loadSampleData.bind(this)}>
+            <button style={{ display: 'block', margin: '0 auto' }} type="button" onClick={this.loadSampleData.bind(this)}>
               サンプル読込
             </button>
           </Grid>
           <Grid item xs={6} sm={1}>
-            <button style={{ padding: 10 }} type="submit" onClick={this.createPdf.bind(this)}>作成</button>
+            <button style={{ display: 'block', margin: '0 auto' }} type="submit" onClick={this.createPdf.bind(this)}>作成</button>
           </Grid>
         </Grid>
         <div ref={(node) => { this.hotDom = node; }} />
