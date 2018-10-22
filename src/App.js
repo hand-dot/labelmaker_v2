@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Notifications from '@material-ui/icons/Notifications';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
@@ -22,6 +23,9 @@ const styles = {
     flexGrow: 1,
   },
 };
+
+const extractNullData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key]));
+
 
 class App extends Component {
   constructor(props) {
@@ -47,6 +51,10 @@ class App extends Component {
   loadSampleData() {
     const { selectedTemplate } = this.state;
     if (this.hotInstance) {
+      const notNullData = extractNullData(this.hotInstance.getSourceData());
+      if (notNullData.length !== 0 && !window.confirm('データがすでに入力されていますがサンプルを読み込みますか？')) {
+        return;
+      }
       const sampledata = JSON.parse(JSON.stringify(templates[selectedTemplate].sampledata));
       this.hotInstance.loadData(sampledata);
     }
@@ -55,13 +63,12 @@ class App extends Component {
   async createPdf() {
     const { selectedTemplate } = this.state;
     if (this.hotInstance) {
-      const sourceData = this.hotInstance.getSourceData();
-      const extractNonNullData = sourceData.filter(data => Object.keys(data).some(key => data[key]));
-      if (extractNonNullData.length === 0) {
+      const notNullData = extractNullData(this.hotInstance.getSourceData());
+      if (notNullData.length === 0) {
         alert('入力がありません。');
         return;
       }
-      const blob = await pdfUtil.create(extractNonNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
+      const blob = await pdfUtil.create(notNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
       const url = window.URL.createObjectURL(blob);
       window.open(url);
     }
@@ -73,8 +80,8 @@ class App extends Component {
       <div>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              レターパック ラベルを一気に作成！
+            <Typography variant="subtitle1" color="inherit" className={classes.grow}>
+              レターパックラベルを一括作成！
             </Typography>
             <IconButton color="inherit">
               <Notifications />
@@ -84,35 +91,46 @@ class App extends Component {
         </AppBar>
         <Grid
           container
+          spacing={8}
           alignContent="center"
           alignItems="center"
           justify="space-between"
-          style={{ padding: '0 5px' }}
+          style={{ padding: '10px 0' }}
         >
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ fontSize: '0.8rem', margin: 5, display: 'inline-block' }}>モチベーション維持のため拡散や紹介してくれると嬉しいです。</p>
               <a style={{ marginTop: 10 }} href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="twitter-share-button" data-show-count="false">Tweet</a>
             </div>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <p style={{ fontSize: '0.8rem' }}>
+          </Grid> */}
+          <Grid item xs={12} sm={5}>
+            <Typography variant="caption">
+              ・
               <strong>Chrome,Safari,Firefox</strong>
               で動作し、個人情報を送信しません。
               <br />
-              エクセルと同等の操作が可能で、alt+Enterで改行や全選択やオートフィルにも対応しています。
+              ・エクセルと同等の操作やショートカット利用可能。
               <br />
-            また、エクセルからもしくはエクセルへのコピペにも対応しています。
-              <span style={{ fontSize: '0.65rem', color: '#999', marginTop: 0.5 }}>*全角数字利用不可/郵便番号は半角数字7桁</span>
-            </p>
+              ・エクセルからもしくはエクセルへのコピペにも対応。
+            </Typography>
           </Grid>
-          <Grid item xs={6} sm={2}>
-            <button style={{ display: 'block', margin: '0 auto' }} type="button" onClick={this.loadSampleData.bind(this)}>
-              サンプル読込
-            </button>
+          <Grid item xs={12} sm={5}>
+            <Typography variant="caption">
+              ＊全角数字利用不可
+              <br />
+              ＊郵便番号は半角数字7桁
+              <br />
+              ＊おところが長い場合はAltを押しながらEnterを押すと改行できます。
+              <br />
+            </Typography>
           </Grid>
           <Grid item xs={6} sm={1}>
-            <button style={{ display: 'block', margin: '0 auto' }} type="submit" onClick={this.createPdf.bind(this)}>作成</button>
+            <Button style={{ display: 'block', margin: '0 auto' }} variant="outlined" size="small" color="primary" onClick={this.loadSampleData.bind(this)}>
+              サンプル
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={1}>
+            <Button style={{ display: 'block', margin: '0 auto' }} variant="outlined" size="small" color="primary" onClick={this.createPdf.bind(this)}>作成</Button>
           </Grid>
         </Grid>
         <div ref={(node) => { this.hotDom = node; }} />
