@@ -7,7 +7,7 @@ export default [{
   from_add: '大阪府大阪1-2-3-4\n大阪マンション123号',
   from_name: '大阪府 出得太1',
   from_tel: '098-7654-4321',
-  desc: 'テストアイテム2',
+  desc: 'テストアイテム1',
 },
 {
   to_zip: 1234567,
