@@ -199,7 +199,7 @@ class App extends Component {
               また、右のフィードバックから感想やアイデア,改善の提案なども募集しています🙏
               <br />
             </Typography>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
               <Button variant="outlined" size="small" color="primary" onClick={this.handleCloseModal}>OK</Button>
             </div>
           </div>
