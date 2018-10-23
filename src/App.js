@@ -108,7 +108,7 @@ class App extends Component {
       if (result) {
         this.handleOpenModal();
       } else {
-        alert('PDFが開ませんでした。\nChrome,Safari,Firefoxのいずれかでもう一度やり直してください。');
+        alert('すみません！失敗しました！\nChromeでもう一度やり直してください。\nそれでもできない場合はフィードバックから現象を教えて下さい！');
       }
     }
   }
