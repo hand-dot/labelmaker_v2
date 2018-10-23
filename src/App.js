@@ -135,13 +135,14 @@ class App extends Component {
         >
           <Grid item xs={12} sm={5}>
             <Typography style={{ marginLeft: 5 }} variant="caption">
-              ・
+              ・動作環境
               <strong>Chrome,Safari,Firefox</strong>
-              で動作し入力情報を送信しないため安全。
               <br />
-              ・エクセルと同等の操作やショートカット利用可能。
+              ・入力情報を送信しないため安全
               <br />
-              ・エクセルからもしくはエクセルへのコピペにも対応。
+              ・エクセルと同等の操作やショートカット利用可能
+              <br />
+              ・エクセルからもしくはエクセルへのコピペにも対応
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
@@ -150,7 +151,9 @@ class App extends Component {
               <br />
               ＊郵便番号は半角数字7桁
               <br />
-              ＊おところが長い場合はAltを押しながらEnterを押すと改行できます。
+              ＊おところが長い場合はAltを押しながらEnterを押すと改行可能
+              <br />
+              ＊サンプルを読み込んでPDFを作成してみてください！
               <br />
             </Typography>
           </Grid>
