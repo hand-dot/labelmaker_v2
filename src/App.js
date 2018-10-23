@@ -140,7 +140,7 @@ class App extends Component {
           <Grid item xs={12} sm={5}>
             <Typography style={{ marginLeft: 5 }} variant="caption">
               ・動作環境
-              <strong>Chrome,Safari,Firefox</strong>
+              <strong>Chrome,Safari,Firefox,IE11,Edge</strong>
               <br />
               ・入力情報を送信しないため安全
               <br />
