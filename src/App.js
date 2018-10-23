@@ -99,9 +99,13 @@ class App extends Component {
         return;
       }
       const blob = await pdfUtil.create(notNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
-      const url = window.URL.createObjectURL(blob);
-      const pdfWindow = window.open(url);
-      if (pdfWindow) {
+      let result = false;
+      if (window.navigator.msSaveBlob) {
+        result = window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`);
+      } else {
+        result = window.open(window.URL.createObjectURL(blob));
+      }
+      if (result) {
         this.handleOpenModal();
       } else {
         alert('PDFが開ませんでした。\nChrome,Safari,Firefoxのいずれかでもう一度やり直してください。');
@@ -186,7 +190,7 @@ class App extends Component {
               </Typography>
             </div>
             <Typography id="created-modal-description">
-              使ってくれてありがとう！あとはA4で印刷すればOK！
+              使ってくれてありがとう！あとは保存してA4で印刷すればOK！
               <br />
               気に入ってもらえたら同僚や友達に紹介して欲しいです!
               <br />
