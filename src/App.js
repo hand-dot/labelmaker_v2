@@ -114,7 +114,7 @@ class App extends Component {
   }
 
   render() {
-    const { isOpenModal } = this.state;
+    const { isOpenModal, selectedTemplate } = this.state;
     const { classes } = this.props;
     return (
       <div>
@@ -157,7 +157,7 @@ class App extends Component {
               <br />
               ＊おところが長い場合はAltを押しながらEnterを押すと改行可能
               <br />
-              ＊サンプルを読み込んでPDFを作成してみてください！
+              ＊とりあえずサンプルを読み込んで作成を押してみてください！
               <br />
             </Typography>
           </Grid>
@@ -185,19 +185,23 @@ class App extends Component {
                 👍
                 </span>
               </Typography>
-              <Typography variant="h5" id="modal-title">
+              <Typography variant="h5">
               いいね！
               </Typography>
             </div>
-            <Typography id="created-modal-description">
+            <Typography>
               使ってくれてありがとう！あとは保存してA4で印刷すればOK！
-              <br />
+            </Typography>
+            <img src={templates[selectedTemplate].photo} alt={`${selectedTemplate}の写真`} style={{ maxWidth: '100%' }} />
+            <Typography>
               気に入ってもらえたら同僚や友達に紹介して欲しいです!
               <br />
               また、右のフィードバックから感想やアイデア,改善の提案なども募集しています🙏
               <br />
-
             </Typography>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button variant="outlined" size="small" color="primary" onClick={this.handleCloseModal}>OK</Button>
+            </div>
           </div>
         </Modal>
       </div>
