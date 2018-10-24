@@ -1,8 +1,13 @@
+import regexp from '../../utils/regexp';
+
+const zipVaridator = (value, callback) => (value === '' || regexp.zipcode(value.toString()) ? callback(true) : callback(false));
+
 export default [
   {
     title: '[To]郵便番号',
     data: 'to_zip',
-    type: 'numeric',
+    type: 'text',
+    validator: zipVaridator,
   },
   {
     title: '[To]おところ',
@@ -22,7 +27,8 @@ export default [
   {
     title: '[From]郵便番号',
     data: 'from_zip',
-    type: 'numeric',
+    type: 'text',
+    validator: zipVaridator,
   },
   {
     title: '[From]おところ',
