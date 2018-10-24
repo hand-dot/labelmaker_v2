@@ -194,10 +194,12 @@ class App extends Component {
             </Typography>
             <img src={templates[selectedTemplate].photo} alt={`${selectedTemplate}の写真`} style={{ maxWidth: '100%' }} />
             <Typography>
+              うまくいきましたか？右のフィードバックから不具合の報告,アイデア,改善の提案なども募集しています
+              <span role="img" aria-label="Help">
+                🙏
+              </span>
+              <br />
               気に入ってもらえたら同僚や友達に紹介して欲しいです!
-              <br />
-              また、右のフィードバックから感想やアイデア,改善の提案なども募集しています🙏
-              <br />
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
               <Button variant="outlined" size="small" color="primary" onClick={this.handleCloseModal}>OK</Button>
