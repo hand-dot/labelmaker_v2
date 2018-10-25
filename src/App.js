@@ -15,6 +15,7 @@ import './styles/handsontable-custom.css';
 import './styles/animation.css';
 import templates from './templates';
 
+import utils from './utils';
 import pdfUtil from './utils/pdf';
 
 const styles = theme => ({
@@ -34,7 +35,20 @@ const styles = theme => ({
   },
 });
 
-const extractNullData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key]));
+// Hotのデータから全て空の行のデータを除去したものを返します。
+const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key]));
+
+// 全角文字を半角にして、おところのカラムで改行の無い、長すぎる(26文字)文字列に改行を挿入する
+const formatData = datas => datas.map((data) => {
+  const clonedData = JSON.parse(JSON.stringify(data));
+  Object.keys(clonedData).forEach((key) => {
+    const text = utils.zenkaku2hankaku(data[key]);
+    if (key === ('to_add' || 'from_add') && !/\n/g.test(data[key])) {
+      clonedData[key] = utils.splitByLength(text, 26).join('\n');
+    }
+  });
+  return clonedData;
+});
 
 function getModalStyle() {
   const top = 50;
@@ -81,7 +95,7 @@ class App extends Component {
   loadSampleData() {
     const { selectedTemplate } = this.state;
     if (this.hotInstance) {
-      const notNullData = extractNullData(this.hotInstance.getSourceData());
+      const notNullData = getNotEmptyRowData(this.hotInstance.getSourceData());
       if (notNullData.length !== 0 && !window.confirm('データがすでに入力されていますがサンプルを読み込みますか？')) {
         return;
       }
@@ -93,12 +107,12 @@ class App extends Component {
   async createPdf() {
     const { selectedTemplate } = this.state;
     if (this.hotInstance) {
-      const notNullData = extractNullData(this.hotInstance.getSourceData());
+      const notNullData = getNotEmptyRowData(this.hotInstance.getSourceData());
       if (notNullData.length === 0) {
         alert('入力がありません。\n出来上がりを確認したい場合はサンプルを読み込んでもう一度作成して下さい。');
         return;
       }
-      const blob = await pdfUtil.create(notNullData, templates[selectedTemplate].image, templates[selectedTemplate].position);
+      const blob = await pdfUtil.create(formatData(notNullData), templates[selectedTemplate].image, templates[selectedTemplate].position);
       let result = false;
       if (window.navigator.msSaveBlob) {
         result = window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`);
