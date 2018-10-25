@@ -1,3 +1,5 @@
+import utils from './index';
+
 window.onload = () => {
   window.pdfMake.fonts = {
     GenShin: {
@@ -28,7 +30,7 @@ export default {
       Object.keys(position).forEach((key) => {
         const labelData = position[key];
         const textObj = {
-          text: data[key],
+          text: utils.zenkaku2hankaku(data[key]),
           absolutePosition: labelData.position,
           fontSize: labelData.size,
           characterSpacing: 'space' in labelData ? labelData.space : undefined,
