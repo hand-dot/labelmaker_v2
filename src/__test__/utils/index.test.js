@@ -41,3 +41,19 @@ describe('splitByLength', () => {
     expect(utils.splitByLength('𠮷野家で𩸽のひらき食べたい', 3)).toEqual(['𠮷野家', 'で𩸽の', 'ひらき', '食べた', 'い']);
   });
 });
+
+describe('mm2pt', () => {
+  test('mm2pt some patterns', () => {
+    expect(utils.mm2pt(0.5)).toEqual(1.4173);
+    expect(utils.mm2pt(1)).toEqual(2.8346);
+    expect(utils.mm2pt(2)).toEqual(5.6692);
+    expect(utils.mm2pt(10)).toEqual(28.346);
+    expect(utils.mm2pt(15)).toEqual(42.519);
+    expect(utils.mm2pt(100)).toEqual(283.46);
+    expect(utils.mm2pt(1000)).toEqual(2834.6);
+    expect(utils.mm2pt(10000)).toEqual(28346);
+    expect(() => { utils.mm2pt('a'); }).toThrow();
+    expect(() => { utils.mm2pt(); }).toThrow();
+    expect(() => { utils.mm2pt(null); }).toThrow();
+  });
+});

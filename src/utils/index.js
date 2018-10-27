@@ -20,4 +20,10 @@ export default {
 
     return str.match(regexPattern) || [];
   },
+  mm2pt(mm) {
+    if (mm === null || isNaN(mm)) throw Error('Error: mm2pt unexpected argument'); // eslint-disable-line 
+    // https://www.ddc.co.jp/words/archives/20090701114500.html
+    const pointRatio = 2.8346;
+    return parseFloat(mm) * pointRatio;
+  },
 };
