@@ -39,4 +39,8 @@ export default {
     const pdf = window.pdfMake.createPdf(docDefinition);
     return new Promise(resolve => pdf.getBlob(blob => resolve(blob)));
   },
+  open(blob) {
+    return window.navigator.msSaveBlob
+      ? window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`) : window.open(window.URL.createObjectURL(blob));
+  },
 };

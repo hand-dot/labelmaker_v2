@@ -78,9 +78,7 @@ class App extends Component {
     }
     const blob = await pdfUtil.create(formatData(datas),
       templates[selectedTemplate].image, templates[selectedTemplate].position);
-    const result = window.navigator.msSaveBlob
-      ? window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`) : window.open(window.URL.createObjectURL(blob));
-    if (result) {
+    if (pdfUtil.open(blob)) {
       this.handleOpenModal();
     } else {
       alert('すみません！失敗しました！\nChromeでもう一度やり直してください。\nそれでもできない場合はフィードバックから現象を教えて下さい！');
