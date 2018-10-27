@@ -1,3 +1,5 @@
+const dummyImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=';
+
 window.onload = () => {
   window.pdfMake.fonts = {
     GenShin: {
@@ -8,6 +10,7 @@ window.onload = () => {
 
 export default {
   create(datas, image, positionData) {
+    console.log(image);
     if (!Array.isArray(datas) || datas.length === 0) {
       return new Promise(resolve => resolve(new Blob([])));
     }
@@ -20,7 +23,7 @@ export default {
 
     clonedDatas.forEach((data, index) => {
       docDefinition.content.push({
-        image,
+        image: image || dummyImage,
         absolutePosition: { x: 0, y: 0 },
         width: 594.35,
         pageBreak: index === 0 ? '' : 'before',

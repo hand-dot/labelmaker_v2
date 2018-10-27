@@ -10,7 +10,7 @@ const styles = {
 
 function Controls(props) {
   const {
-    isEditMode, handleEditMode, loadSampleData, createPdf,
+    isTemplateEditor, handleEditMode, loadSampleData, createPdf,
   } = props;
   return (
     <Grid
@@ -31,11 +31,10 @@ function Controls(props) {
           <br />
             ・エクセルからもしくはエクセルへのコピペにも対応
           <br />
-          {/* <label htmlFor="isEditMode">
+          {/* <label htmlFor="isTemplateEditor">
             TemplateEditor:
-            <input id="isEditMode" type="checkbox" checked={isEditMode} onChange={handleEditMode} />
+            <input id="isTemplateEditor" type="checkbox" checked={isTemplateEditor} onChange={handleEditMode} />
           </label> */}
-
         </Typography>
       </Grid>
       <Grid item xs={12} sm={5}>
@@ -63,7 +62,7 @@ function Controls(props) {
 }
 
 Controls.propTypes = {
-  isEditMode: PropTypes.bool.isRequired,
+  isTemplateEditor: PropTypes.bool.isRequired,
   handleEditMode: PropTypes.func.isRequired,
   loadSampleData: PropTypes.func.isRequired,
   createPdf: PropTypes.func.isRequired,

@@ -35,7 +35,7 @@ class App extends Component {
     this.hotInstance = null;
     this.state = {
       isOpenModal: false,
-      isEditMode: false,
+      isTemplateEditor: false,
       selectedTemplate: 'letterpack',
     };
   }
@@ -62,7 +62,7 @@ class App extends Component {
 
   handleEditMode = (event) => {
     const { target } = event;
-    this.setState({ isEditMode: target.checked });
+    this.setState({ isTemplateEditor: target.checked });
     requestIdleCallback(() => {
       if (!this.hotInstance) return;
       this.hotInstance.render();
@@ -97,18 +97,18 @@ class App extends Component {
   }
 
   render() {
-    const { isEditMode, isOpenModal, selectedTemplate } = this.state;
+    const { isTemplateEditor, isOpenModal, selectedTemplate } = this.state;
     return (
       <>
         <Header />
         <Controls
-          isEditMode={isEditMode}
+          isTemplateEditor={isTemplateEditor}
           handleEditMode={this.handleEditMode.bind(this)}
           loadSampleData={this.loadSampleData.bind(this)}
           createPdf={this.createPdf.bind(this)}
         />
-        {isEditMode && <TemplateEditor />}
-        <div style={{ display: !isEditMode ? 'block' : 'none' }} ref={(node) => { this.hotDom = node; }} />
+        {isTemplateEditor && <TemplateEditor />}
+        <div style={{ display: !isTemplateEditor ? 'block' : 'none' }} ref={(node) => { this.hotDom = node; }} />
         <Modal
           open={isOpenModal}
           onClose={this.handleCloseModal.bind(this)}

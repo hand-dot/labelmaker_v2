@@ -7,12 +7,10 @@ import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import pdfUtil from '../utils/pdf';
 
-import image from '../templates/letterpack/base64';
-
-const stringProps = ['prop', 'text'];
+const stringProps = ['Column', 'TestData'];
 
 const getEmptyData = () => ({
-  id: Date.now(), x: 290, y: 113, size: 40, space: 12.5, prop: 'to_zip', text: '1234567',
+  id: Date.now(), x: 0, y: 0, size: 18, space: 0, Column: '', TestData: '',
 });
 
 const setIframe = async (pdfData, base64, positionData) => {
@@ -22,12 +20,12 @@ const setIframe = async (pdfData, base64, positionData) => {
 
 const debounceSetIframe = debounce(setIframe, 500);
 
-const refleshPdf = (datas) => {
+const refleshPdf = (datas, image) => {
   const pdfData = [{}];
   const positionData = {};
   datas.forEach((data) => {
-    pdfData[0][data.prop] = data.text;
-    positionData[data.prop] = {
+    pdfData[0][data.Column] = data.TestData;
+    positionData[data.Column] = {
       position:
        { x: +data.x, y: +data.y },
       size: +data.size,
@@ -41,6 +39,7 @@ class TemplateEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      image: null,
       datas: [getEmptyData()],
     };
   }
@@ -52,14 +51,25 @@ class TemplateEditor extends Component {
     iframe.src = URL.createObjectURL(blob);
   }
 
-   handleChange = ({ key, index }) => (event) => {
-     const { datas } = this.state;
+   handleChangeInput = ({ key, index }) => (e) => {
+     const { datas, image } = this.state;
      const clonedDatas = JSON.parse(JSON.stringify(datas));
-     clonedDatas[index][key] = event.target.value;
+     clonedDatas[index][key] = e.target.value;
      this.setState({ datas: clonedDatas });
-     refleshPdf(clonedDatas);
+     refleshPdf(clonedDatas, image);
    };
 
+   handleChangeFile(event) {
+     const { datas } = this.state;
+     const files = event.target.files; // eslint-disable-line
+     const fileReader = new FileReader();
+     fileReader.addEventListener('load', (e) => {
+       console.log(e.target.result);
+       this.setState({ image: e.target.result }); // eslint-disable-line
+       refleshPdf(datas, e.target.result);
+     });
+     fileReader.readAsDataURL(files[0]);
+   }
 
    addData() {
      const { datas } = this.state;
@@ -74,6 +84,7 @@ class TemplateEditor extends Component {
      this.setState({
        datas: datas.filter((_, _index) => _index !== index),
      });
+     this.forceUpdate(); // 削除処理をiframeに反映させる
    }
 
    render() {
@@ -84,6 +95,10 @@ class TemplateEditor extends Component {
          justify="space-between"
        >
          <Grid item xs={6}>
+           <label style={{ padding: 10 }} htmlFor="image">
+            Image:
+             <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeFile.bind(this)} />
+           </label>
            {datas.map((data, index) => (
              <Fragment key={data.id}>
                <form style={{
@@ -98,13 +113,17 @@ class TemplateEditor extends Component {
                        data={data}
                        index={index}
                       type={stringProps.includes(key) ? 'text' : 'number'} // eslint-disable-line 
-                       handleChange={this.handleChange.bind(this)}
+                       handleChange={this.handleChangeInput.bind(this)}
                      />
                    )
                  ))}
-                 <div style={{ width: 70 }}>
+                 <div style={{
+                   width: 70,
+                   display: 'flex',
+                   justifyContent: 'flex-end',
+                 }}
+                 >
                    <Button
-                     variant="outlined"
                      size="small"
                      color="primary"
                      disabled={datas.length === 1}
@@ -118,7 +137,11 @@ class TemplateEditor extends Component {
              </Fragment>
            ))}
            <div style={{
-             marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center',
+             padding: 10,
+             marginTop: '1rem',
+             display: 'flex',
+             justifyContent: 'flex-end',
+             alignItems: 'center',
            }}
            >
              <Button
