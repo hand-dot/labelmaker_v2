@@ -64,7 +64,6 @@ class TemplateEditor extends Component {
      const files = event.target.files; // eslint-disable-line
      const fileReader = new FileReader();
      fileReader.addEventListener('load', (e) => {
-       console.log(e.target.result);
        this.setState({ image: e.target.result }); // eslint-disable-line
        refleshPdf(datas, e.target.result);
      });
