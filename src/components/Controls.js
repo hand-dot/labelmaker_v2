@@ -6,17 +6,15 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 const styles = {
-  grow: {
-    flexGrow: 1,
-  },
 };
 
 function Controls(props) {
-  const { loadSampleData, createPdf } = props;
+  const {
+    isEditMode, handleEditMode, loadSampleData, createPdf,
+  } = props;
   return (
     <Grid
       container
-      spacing={8}
       alignContent="center"
       alignItems="center"
       justify="space-between"
@@ -32,6 +30,12 @@ function Controls(props) {
             ・エクセルと同等の操作やショートカット利用可能
           <br />
             ・エクセルからもしくはエクセルへのコピペにも対応
+          <br />
+          {/* <label htmlFor="isEditMode">
+            TemplateEditor:
+            <input id="isEditMode" type="checkbox" checked={isEditMode} onChange={handleEditMode} />
+          </label> */}
+
         </Typography>
       </Grid>
       <Grid item xs={12} sm={5}>
@@ -59,6 +63,8 @@ function Controls(props) {
 }
 
 Controls.propTypes = {
+  isEditMode: PropTypes.bool.isRequired,
+  handleEditMode: PropTypes.func.isRequired,
   loadSampleData: PropTypes.func.isRequired,
   createPdf: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired, // eslint-disable-line

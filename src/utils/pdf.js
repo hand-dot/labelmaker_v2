@@ -41,6 +41,6 @@ export default {
   },
   open(blob) {
     return window.navigator.msSaveBlob
-      ? window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`) : window.open(window.URL.createObjectURL(blob));
+      ? window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`) : window.open(URL.createObjectURL(blob));
   },
 };

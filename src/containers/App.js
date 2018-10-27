@@ -3,6 +3,7 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
 import Header from '../components/Header';
 import Controls from '../components/Controls';
+import TemplateEditor from '../components/TemplateEditor';
 import Modal from '../components/Modal';
 import { Title, Contents, Action } from '../components/ModalContents/PdfCreated';
 
@@ -10,7 +11,7 @@ import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
 import templates from '../templates';
 
-import utils from '../utils';
+import util from '../utils';
 import pdfUtil from '../utils/pdf';
 
 // Hotのデータから全て空の行のデータを除去したものを返します。
@@ -20,9 +21,9 @@ const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(d
 const formatData = datas => datas.map((data) => {
   const clonedData = JSON.parse(JSON.stringify(data));
   Object.keys(clonedData).forEach((key) => {
-    const text = utils.zenkaku2hankaku(data[key]);
+    const text = util.zenkaku2hankaku(data[key]);
     if (key === ('to_add' || 'from_add') && !/\n/g.test(data[key])) {
-      clonedData[key] = utils.splitByLength(text, 26).join('\n');
+      clonedData[key] = util.splitByLength(text, 26).join('\n');
     }
   });
   return clonedData;
@@ -34,6 +35,7 @@ class App extends Component {
     this.hotInstance = null;
     this.state = {
       isOpenModal: false,
+      isEditMode: false,
       selectedTemplate: 'letterpack',
     };
   }
@@ -56,6 +58,15 @@ class App extends Component {
 
   handleCloseModal = () => {
     this.setState({ isOpenModal: false });
+  };
+
+  handleEditMode = (event) => {
+    const { target } = event;
+    this.setState({ isEditMode: target.checked });
+    requestIdleCallback(() => {
+      if (!this.hotInstance) return;
+      this.hotInstance.render();
+    });
   };
 
 
@@ -86,15 +97,18 @@ class App extends Component {
   }
 
   render() {
-    const { isOpenModal, selectedTemplate } = this.state;
+    const { isEditMode, isOpenModal, selectedTemplate } = this.state;
     return (
       <>
         <Header />
         <Controls
+          isEditMode={isEditMode}
+          handleEditMode={this.handleEditMode.bind(this)}
           loadSampleData={this.loadSampleData.bind(this)}
           createPdf={this.createPdf.bind(this)}
         />
-        <div ref={(node) => { this.hotDom = node; }} />
+        {isEditMode && <TemplateEditor />}
+        <div style={{ display: !isEditMode ? 'block' : 'none' }} ref={(node) => { this.hotDom = node; }} />
         <Modal
           open={isOpenModal}
           onClose={this.handleCloseModal.bind(this)}
