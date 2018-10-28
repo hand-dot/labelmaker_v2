@@ -33,8 +33,7 @@ const getEmptyData = () => ({
 
 const setIframe = async (pdfData, base64, positionData) => {
   const blob = await pdfUtil.create(pdfData, base64, positionData);
-  const pdfIframe = document.getElementById('pdfIframe');
-  pdfIframe.src = URL.createObjectURL(blob);
+  document.getElementById('pdfIframe').src = URL.createObjectURL(blob);
 };
 
 const setTemplate = (pdfData, image, positionData) => {
