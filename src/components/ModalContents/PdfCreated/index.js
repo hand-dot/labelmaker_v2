@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import templates from '../../../templates';
 
 export const Title = () => (
       <>
@@ -17,12 +16,11 @@ export const Title = () => (
     </>
 );
 
-export const Contents = ({ selectedTemplate }) => (
+export const Contents = () => (
     <>
       <Typography>
         使ってくれてありがとう！あとは保存してA4で印刷すればOK！
       </Typography>
-      <img src={templates[selectedTemplate].photo} alt={`${selectedTemplate}の写真`} style={{ maxWidth: '100%' }} />
       <Typography>
         うまくいきましたか？右のフィードバックから不具合の報告,
         <br />
@@ -35,10 +33,6 @@ export const Contents = ({ selectedTemplate }) => (
       </Typography>
     </>
 );
-
-Contents.propTypes = {
-  selectedTemplate: PropTypes.string.isRequired,
-};
 
 export const Action = ({ onClick }) => (
   <Button variant="outlined" size="small" color="primary" onClick={onClick}>OK</Button>
