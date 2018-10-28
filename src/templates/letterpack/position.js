@@ -13,6 +13,7 @@ export default {
       y: 88.1945,
     },
     size: 13,
+    space: 0,
   },
   to_name: {
     position: {
@@ -20,6 +21,7 @@ export default {
       y: 123.825078,
     },
     size: 18,
+    space: 0,
   },
   to_tel: {
     position: {
@@ -27,6 +29,7 @@ export default {
       y: 134.05564,
     },
     size: 21,
+    space: 0,
   },
   from_zip: {
     position: {
@@ -42,6 +45,7 @@ export default {
       y: 152.752874,
     },
     size: 11,
+    space: 0,
   },
   from_name: {
     position: {
@@ -49,6 +53,7 @@ export default {
       y: 180.975114,
     },
     size: 12,
+    space: 0,
   },
   from_tel: {
     position: {
@@ -56,6 +61,7 @@ export default {
       y: 188.030674,
     },
     size: 21,
+    space: 0,
   },
   desc: {
     position: {
@@ -63,5 +69,6 @@ export default {
       y: 215.900136,
     },
     size: 20,
+    space: 0,
   },
 };

@@ -7,7 +7,19 @@ import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import pdfUtil from '../utils/pdf';
 
-const stringProps = ['Column', 'TestData'];
+// このコンポーネントはテンプレート開発者用。公開していません。
+const template = {};
+const stringProps = ['Column', 'SampleData'];
+
+const downloadTemplate = (fileName) => {
+  const blob = new Blob([JSON.stringify(template)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${fileName}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
 
 const getEmptyData = () => ({
   id: Date.now(),
@@ -16,7 +28,7 @@ const getEmptyData = () => ({
   'size(pt)': 18,
   'space(pt)': 0,
   Column: '',
-  TestData: '',
+  SampleData: '',
 });
 
 const setIframe = async (pdfData, base64, positionData) => {
@@ -24,27 +36,55 @@ const setIframe = async (pdfData, base64, positionData) => {
   document.getElementById('pdfIframe').src = URL.createObjectURL(blob);
 };
 
-const debounceSetIframe = debounce(setIframe, 500);
+const setTemplate = (pdfData, image, positionData) => {
+  template.sampledata = pdfData;
+  template.position = positionData;
+  template.image = image;
+  template.columns = Object.keys(pdfData[0]).map(key => ({ data: key }));
+  template.dataSchema = Object.keys(pdfData[0]).map(key => ({ [key]: null }));
+};
 
-const refleshPdf = (datas, image) => {
+const formatTemplate2State = ({
+  image, columns, sampledata, position,
+}) => {
+  const now = Date.now();
+  const datas = [];
+  columns.forEach((column, index) => {
+    const key = column.data;
+    const data = {
+      id: now + index,
+      'x(mm)': position[key].position.x,
+      'y(mm)': position[key].position.y,
+      'size(pt)': position[key].size,
+      'space(pt)': position[key].space,
+      Column: key,
+      SampleData: sampledata[0][key],
+    };
+    datas.push(data);
+  });
+  return { image, datas };
+};
+
+const refleshPdf = debounce((datas, image) => {
   const pdfData = [{}];
   const positionData = {};
   datas.forEach((data) => {
-    pdfData[0][data.Column] = data.TestData;
+    pdfData[0][data.Column] = data.SampleData;
     positionData[data.Column] = {
-      position:
-       { x: +data['x(mm)'], y: +data['y(mm)'] },
+      position: { x: +data['x(mm)'], y: +data['y(mm)'] },
       size: +data['size(pt)'],
       space: +data['space(pt)'],
     };
   });
-  debounceSetIframe(pdfData, image, positionData);
-};
+  setTemplate(pdfData, image, positionData);
+  setIframe(pdfData, image, positionData);
+}, 100);
 
 class TemplateEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      fileName: '',
       image: null,
       datas: [getEmptyData()],
     };
@@ -65,7 +105,11 @@ class TemplateEditor extends Component {
      refleshPdf(clonedDatas, image);
    };
 
-   handleChangeFile(event) {
+   handleFileNameChange(e) {
+     this.setState({ fileName: e.target.value });
+   }
+
+   handleChangeImage(event) {
      const { datas } = this.state;
      const files = event.target.files; // eslint-disable-line
      const fileReader = new FileReader();
@@ -74,6 +118,17 @@ class TemplateEditor extends Component {
        refleshPdf(datas, e.target.result);
      });
      fileReader.readAsDataURL(files[0]);
+   }
+
+   handleChangeTemplate(event) {
+    const files = event.target.files; // eslint-disable-line
+     const fileReader = new FileReader();
+     fileReader.addEventListener('load', (e) => {
+        const {image, datas} = formatTemplate2State(JSON.parse(e.target.result)); // eslint-disable-line
+        this.setState({ datas, image }); // eslint-disable-line
+       refleshPdf(datas, image);
+     });
+     fileReader.readAsText(files[0]);
    }
 
    addData() {
@@ -93,17 +148,35 @@ class TemplateEditor extends Component {
    }
 
    render() {
-     const { datas } = this.state;
+     const { fileName, datas } = this.state;
      return (
        <Grid
          container
          justify="space-between"
        >
          <Grid item xs={6}>
-           <label style={{ padding: 10 }} htmlFor="image">
-            Image:
-             <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeFile.bind(this)} />
-           </label>
+           <TextField
+             style={{ margin: 10 }}
+             label="fileName"
+             value={fileName}
+             onChange={this.handleFileNameChange.bind(this)}
+             InputLabelProps={{ shrink: true }}
+             variant="outlined"
+           />
+           <div style={{
+             padding: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'bottom',
+           }}
+           >
+             <label htmlFor="image">
+              Image:
+               <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeImage.bind(this)} />
+             </label>
+             <label htmlFor="importTemplate">
+              Template:
+               <input id="importTemplate" type="file" accept="application/json" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeTemplate.bind(this)} />
+             </label>
+             <button type="button" onClick={(() => { downloadTemplate(fileName); })}>download</button>
+           </div>
            {datas.map((data, index) => (
              <Fragment key={data.id}>
                <form style={{
@@ -117,23 +190,13 @@ class TemplateEditor extends Component {
                        target={key}
                        data={data}
                        index={index}
-                      type={stringProps.includes(key) ? 'text' : 'number'} // eslint-disable-line 
+                       type={stringProps.includes(key) ? 'text' : 'number'}
                        handleChange={this.handleChangeInput.bind(this)}
                      />
                    )
                  ))}
-                 <div style={{
-                   width: 70,
-                   display: 'flex',
-                   justifyContent: 'flex-end',
-                 }}
-                 >
-                   <Button
-                     size="small"
-                     color="primary"
-                     disabled={datas.length === 1}
-                     onClick={this.removeData.bind(this, index)}
-                   >
+                 <div style={{ width: 70, display: 'flex', justifyContent: 'flex-end' }}>
+                   <Button size="small" color="primary" disabled={datas.length === 1} onClick={this.removeData.bind(this, index)}>
                       -
                    </Button>
                  </div>
@@ -142,18 +205,10 @@ class TemplateEditor extends Component {
              </Fragment>
            ))}
            <div style={{
-             padding: 10,
-             marginTop: '1rem',
-             display: 'flex',
-             justifyContent: 'flex-end',
-             alignItems: 'center',
+             padding: 10, marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center',
            }}
            >
-             <Button
-               size="small"
-               color="primary"
-               onClick={this.addData.bind(this)}
-             >
+             <Button size="small" color="primary" onClick={this.addData.bind(this)}>
               +
              </Button>
            </div>

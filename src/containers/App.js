@@ -35,13 +35,14 @@ class App extends Component {
     this.hotInstance = null;
     this.state = {
       isOpenModal: false,
-      isTemplateEditor: false,
+      isTemplateEditor: false, // テンプレート開発者用。公開していません。
       selectedTemplate: 'letterpack',
     };
   }
 
   componentDidMount() {
     const { selectedTemplate } = this.state;
+    if (!this.hotDom) return;
     this.hotInstance = new Handsontable(this.hotDom, {
       rowHeaders: true,
       stretchH: 'all',
@@ -59,16 +60,6 @@ class App extends Component {
   handleCloseModal = () => {
     this.setState({ isOpenModal: false });
   };
-
-  handleEditMode = (event) => {
-    const { target } = event;
-    this.setState({ isTemplateEditor: target.checked });
-    requestIdleCallback(() => {
-      if (!this.hotInstance) return;
-      this.hotInstance.render();
-    });
-  };
-
 
   loadSampleData() {
     const { selectedTemplate } = this.state;
@@ -101,14 +92,14 @@ class App extends Component {
     return (
       <>
         <Header />
-        <Controls
-          isTemplateEditor={isTemplateEditor}
-          handleEditMode={this.handleEditMode.bind(this)}
+
+        {isTemplateEditor && <TemplateEditor />}
+        {!isTemplateEditor && (<><Controls
           loadSampleData={this.loadSampleData.bind(this)}
           createPdf={this.createPdf.bind(this)}
         />
-        {isTemplateEditor && <TemplateEditor />}
-        <div style={{ display: !isTemplateEditor ? 'block' : 'none' }} ref={(node) => { this.hotDom = node; }} />
+          <div ref={(node) => { this.hotDom = node; }} /></>)}
+
         <Modal
           open={isOpenModal}
           onClose={this.handleCloseModal.bind(this)}
