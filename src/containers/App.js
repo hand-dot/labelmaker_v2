@@ -35,7 +35,7 @@ class App extends Component {
     this.hotInstance = null;
     this.state = {
       isOpenModal: false,
-      isTemplateEditor: true,
+      isTemplateEditor: false,
       selectedTemplate: 'letterpack',
     };
   }

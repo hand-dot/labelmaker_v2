@@ -31,17 +31,19 @@ function Controls(props) {
           <br />
             ・エクセルからもしくはエクセルへのコピペにも対応
           <br />
-          <label htmlFor="isTemplateEditor">
+          {/* <label htmlFor="isTemplateEditor">
             TemplateEditor:
             <input id="isTemplateEditor" type="checkbox" checked={isTemplateEditor} onChange={handleEditMode} />
-          </label>
+          </label> */}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={5}>
         <Typography style={{ marginLeft: 5 }} variant="caption">
-            ＊全角数字利用不可
+            ＊全角数字利用不可(現在フォントが未対応)
           <br />
-            ＊郵便番号は半角数字7桁
+            ＊郵便番号は半角数字7桁(
+          <span style={{ color: 'red' }}>赤文字</span>
+          はエラーです)
           <br />
             ＊おところが長い場合はAltを押しながらEnterを押すと改行可能
           <br />
