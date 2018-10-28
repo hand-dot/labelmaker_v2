@@ -39,6 +39,7 @@ export default {
           },
           fontSize: labelData.size,
           characterSpacing: 'space' in labelData ? labelData.space : undefined,
+          lineHeight: 'lineHeight' in labelData ? labelData.lineHeight : undefined,
         };
         docDefinition.content.push(textObj);
       });

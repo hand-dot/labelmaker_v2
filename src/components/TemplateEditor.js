@@ -8,6 +8,7 @@ import Divider from '@material-ui/core/Divider';
 import pdfUtil from '../utils/pdf';
 
 // このコンポーネントはテンプレート開発者用。公開していません。
+const PDF_REFLESH_MS = 10;
 const template = {};
 const stringProps = ['Column', 'SampleData'];
 
@@ -28,6 +29,7 @@ const getEmptyData = () => ({
   'y(mm)': 0,
   'size(pt)': 18,
   'space(pt)': 0,
+  'line-height(em)': 1,
   SampleData: '',
 });
 
@@ -60,6 +62,7 @@ const formatTemplate2State = ({
       'y(mm)': position[key].position.y,
       'size(pt)': position[key].size,
       'space(pt)': position[key].space,
+      'line-height(em)': position[key].lineHeight,
       SampleData: sampledata[0][key],
     };
     datas.push(data);
@@ -76,11 +79,12 @@ const refleshPdf = debounce((datas, image) => {
       position: { x: +data['x(mm)'], y: +data['y(mm)'] },
       size: +data['size(pt)'],
       space: +data['space(pt)'],
+      lineHeight: +data['line-height(em)'],
     };
   });
   setTemplate(pdfData, image, positionData);
   setIframe(pdfData, image, positionData);
-}, 1000);
+}, PDF_REFLESH_MS);
 
 class TemplateEditor extends Component {
   constructor(props) {
