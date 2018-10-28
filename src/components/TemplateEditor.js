@@ -110,7 +110,7 @@ class TemplateEditor extends Component {
      refleshPdf(clonedDatas, image);
    };
 
-   handleTemplateNameChange(e) {
+   handleChangeTemplateName(e) {
      this.setState({ templateName: e.target.value });
      template.templateName = e.target.value;
    }
@@ -162,7 +162,7 @@ class TemplateEditor extends Component {
              style={{ margin: 10 }}
              label="templateName"
              value={templateName}
-             onChange={this.handleTemplateNameChange.bind(this)}
+             onChange={this.handleChangeTemplateName.bind(this)}
              InputLabelProps={{ shrink: true }}
              variant="outlined"
            />
