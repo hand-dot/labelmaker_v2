@@ -80,7 +80,7 @@ const refleshPdf = debounce((datas, image) => {
   });
   setTemplate(pdfData, image, positionData);
   setIframe(pdfData, image, positionData);
-}, 100);
+}, 1000);
 
 class TemplateEditor extends Component {
   constructor(props) {
@@ -175,10 +175,10 @@ class TemplateEditor extends Component {
                <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeImage.bind(this)} />
              </label>
              <label htmlFor="importTemplate">
-              Template:
+              Load:
                <input id="importTemplate" type="file" accept="application/json" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeTemplate.bind(this)} />
              </label>
-             <button type="button" onClick={(() => { downloadTemplate(templateName); })}>download</button>
+             <button type="button" onClick={(() => { downloadTemplate(templateName); })}>Download</button>
            </div>
            {datas.map((data, index) => (
              <Fragment key={data.id}>
