@@ -26,7 +26,7 @@ export const Contents = ({ selectedTemplate }) => (
       <Typography>
         うまくいきましたか？右のフィードバックから不具合の報告,
         <br />
-アイデア,改善の提案なども募集しています
+        アイデア,改善の提案なども募集しています
         <span role="img" aria-label="Help">
         🙏
         </span>

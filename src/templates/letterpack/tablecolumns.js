@@ -1,6 +1,6 @@
 import regexp from '../../utils/regexp';
 
-const zipVaridator = (value, callback) => (value === '' || (value.toString && regexp.zipcode(value.toString())) ? callback(true) : callback(false));
+const zipVaridator = (value, callback) => (value === '' || (value !== null && value.toString && regexp.zipcode(value.toString())) ? callback(true) : callback(false));
 
 export default [
   {
