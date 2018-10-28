@@ -31,10 +31,10 @@ function Controls(props) {
           <br />
             ・エクセルからもしくはエクセルへのコピペにも対応
           <br />
-          {/* <label htmlFor="isTemplateEditor">
+          <label htmlFor="isTemplateEditor">
             TemplateEditor:
             <input id="isTemplateEditor" type="checkbox" checked={isTemplateEditor} onChange={handleEditMode} />
-          </label> */}
+          </label>
         </Typography>
       </Grid>
       <Grid item xs={12} sm={5}>

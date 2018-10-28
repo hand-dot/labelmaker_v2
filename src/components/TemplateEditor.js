@@ -10,7 +10,13 @@ import pdfUtil from '../utils/pdf';
 const stringProps = ['Column', 'TestData'];
 
 const getEmptyData = () => ({
-  id: Date.now(), x: 0, y: 0, size: 18, space: 0, Column: '', TestData: '',
+  id: Date.now(),
+  'x(mm)': 0,
+  'y(mm)': 0,
+  'size(pt)': 18,
+  'space(pt)': 0,
+  Column: '',
+  TestData: '',
 });
 
 const setIframe = async (pdfData, base64, positionData) => {
@@ -27,9 +33,9 @@ const refleshPdf = (datas, image) => {
     pdfData[0][data.Column] = data.TestData;
     positionData[data.Column] = {
       position:
-       { x: +data.x, y: +data.y },
-      size: +data.size,
-      space: +data.space,
+       { x: +data['x(mm)'], y: +data['y(mm)'] },
+      size: +data['size(pt)'],
+      space: +data['space(pt)'],
     };
   });
   debounceSetIframe(pdfData, image, positionData);

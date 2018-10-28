@@ -1,3 +1,5 @@
+import util from './index';
+
 const dummyImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=';
 
 window.onload = () => {
@@ -31,7 +33,10 @@ export default {
         const labelData = positionData[key];
         const textObj = {
           text: data[key],
-          absolutePosition: labelData.position,
+          absolutePosition: {
+            x: util.mm2pt(labelData.position.x),
+            y: util.mm2pt(labelData.position.y),
+          },
           fontSize: labelData.size,
           characterSpacing: 'space' in labelData ? labelData.space : undefined,
         };
