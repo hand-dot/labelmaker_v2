@@ -11,41 +11,44 @@ import pdfUtil from '../utils/pdf';
 const template = {};
 const stringProps = ['Column', 'SampleData'];
 
-const downloadTemplate = (fileName) => {
+const downloadTemplate = (templateName) => {
   const blob = new Blob([JSON.stringify(template)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${fileName}.json`;
+  link.download = `${templateName}.json`;
   link.click();
   URL.revokeObjectURL(url);
 };
 
 const getEmptyData = () => ({
   id: Date.now(),
+  Column: '',
   'x(mm)': 0,
   'y(mm)': 0,
   'size(pt)': 18,
   'space(pt)': 0,
-  Column: '',
   SampleData: '',
 });
 
 const setIframe = async (pdfData, base64, positionData) => {
   const blob = await pdfUtil.create(pdfData, base64, positionData);
-  document.getElementById('pdfIframe').src = URL.createObjectURL(blob);
+  const pdfIframe = document.getElementById('pdfIframe');
+  pdfIframe.src = URL.createObjectURL(blob);
 };
 
 const setTemplate = (pdfData, image, positionData) => {
   template.sampledata = pdfData;
   template.position = positionData;
   template.image = image;
-  template.columns = Object.keys(pdfData[0]).map(key => ({ data: key }));
-  template.dataSchema = Object.keys(pdfData[0]).map(key => ({ [key]: null }));
+  template.columns = Object.keys(pdfData[0]).map(key => ({ data: key, title: key }));
+  const dataSchema = {};
+  Object.keys(pdfData[0]).forEach((key) => { dataSchema[key] = null; });
+  template.dataSchema = dataSchema;
 };
 
 const formatTemplate2State = ({
-  image, columns, sampledata, position,
+  templateName, image, columns, sampledata, position,
 }) => {
   const now = Date.now();
   const datas = [];
@@ -53,16 +56,16 @@ const formatTemplate2State = ({
     const key = column.data;
     const data = {
       id: now + index,
+      Column: key,
       'x(mm)': position[key].position.x,
       'y(mm)': position[key].position.y,
       'size(pt)': position[key].size,
       'space(pt)': position[key].space,
-      Column: key,
       SampleData: sampledata[0][key],
     };
     datas.push(data);
   });
-  return { image, datas };
+  return { templateName, image, datas };
 };
 
 const refleshPdf = debounce((datas, image) => {
@@ -84,7 +87,7 @@ class TemplateEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fileName: '',
+      templateName: '',
       image: null,
       datas: [getEmptyData()],
     };
@@ -105,8 +108,9 @@ class TemplateEditor extends Component {
      refleshPdf(clonedDatas, image);
    };
 
-   handleFileNameChange(e) {
-     this.setState({ fileName: e.target.value });
+   handleTemplateNameChange(e) {
+     this.setState({ templateName: e.target.value });
+     template.templateName = e.target.value;
    }
 
    handleChangeImage(event) {
@@ -124,8 +128,8 @@ class TemplateEditor extends Component {
     const files = event.target.files; // eslint-disable-line
      const fileReader = new FileReader();
      fileReader.addEventListener('load', (e) => {
-        const {image, datas} = formatTemplate2State(JSON.parse(e.target.result)); // eslint-disable-line
-        this.setState({ datas, image }); // eslint-disable-line
+        const {templateName, image, datas} = formatTemplate2State(JSON.parse(e.target.result)); // eslint-disable-line
+        this.setState({ templateName, datas, image }); // eslint-disable-line
        refleshPdf(datas, image);
      });
      fileReader.readAsText(files[0]);
@@ -148,7 +152,7 @@ class TemplateEditor extends Component {
    }
 
    render() {
-     const { fileName, datas } = this.state;
+     const { templateName, datas } = this.state;
      return (
        <Grid
          container
@@ -157,9 +161,9 @@ class TemplateEditor extends Component {
          <Grid item xs={6}>
            <TextField
              style={{ margin: 10 }}
-             label="fileName"
-             value={fileName}
-             onChange={this.handleFileNameChange.bind(this)}
+             label="templateName"
+             value={templateName}
+             onChange={this.handleTemplateNameChange.bind(this)}
              InputLabelProps={{ shrink: true }}
              variant="outlined"
            />
@@ -175,7 +179,7 @@ class TemplateEditor extends Component {
               Template:
                <input id="importTemplate" type="file" accept="application/json" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeTemplate.bind(this)} />
              </label>
-             <button type="button" onClick={(() => { downloadTemplate(fileName); })}>download</button>
+             <button type="button" onClick={(() => { downloadTemplate(templateName); })}>download</button>
            </div>
            {datas.map((data, index) => (
              <Fragment key={data.id}>

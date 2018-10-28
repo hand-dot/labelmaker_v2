@@ -10,7 +10,6 @@ import { Title, Contents, Action } from '../components/ModalContents/PdfCreated'
 import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
 import templates from '../templates';
-
 import util from '../utils';
 import pdfUtil from '../utils/pdf';
 
