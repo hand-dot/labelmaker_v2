@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Handsontable from 'handsontable';
+import debounce from 'lodash.debounce';
 import 'handsontable/dist/handsontable.full.min.css';
 import Header from '../components/Header';
 import Controls from '../components/Controls';
@@ -12,6 +13,9 @@ import '../styles/animation.css';
 import templates from '../templates';
 import util from '../utils';
 import pdfUtil from '../utils/pdf';
+
+const PDF_REFLESH_MS = 500;
+const emptyIframe = new Blob(['<div>左のテーブルを記入して下さい。</div>'], { type: 'text/html' });
 
 // Hotのデータから全て空の行のデータを除去したものを返します。
 const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key])); // eslint-disable-line 
@@ -42,14 +46,22 @@ class App extends Component {
   componentDidMount() {
     const { selectedTemplate } = this.state;
     if (!this.hotDom) return;
-    this.hotInstance = new Handsontable(this.hotDom, {
+    const self = this;
+    this.hotInstance = Handsontable(this.hotDom, {
+      height: window.innerHeight - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
+      width: (window.innerWidth / 2),
       rowHeaders: true,
       stretchH: 'all',
       minRows: 50,
       colWidths: Math.round(window.innerWidth / templates[selectedTemplate].columns.length) - 50,
       columns: templates[selectedTemplate].columns,
       dataSchema: templates[selectedTemplate].dataSchema,
+      afterChange: debounce(() => {
+        self.refleshPdf();
+      }, PDF_REFLESH_MS),
     });
+    this.iframe.src = URL.createObjectURL(emptyIframe);
+    this.forceUpdate(); // this.iframeを再計算させる
   }
 
   handleOpenModal = () => {
@@ -60,6 +72,14 @@ class App extends Component {
     this.setState({ isOpenModal: false });
   };
 
+  async refleshPdf() {
+    const { selectedTemplate } = this.state;
+    const datas = getNotEmptyRowData(this.hotInstance.getSourceData());
+    const blob = await pdfUtil.getBlob(formatData(datas),
+      templates[selectedTemplate].image, templates[selectedTemplate].position);
+    this.iframe.src = URL.createObjectURL(blob);
+  }
+
   loadSampleData() {
     const { selectedTemplate } = this.state;
     if (!this.hotInstance) return;
@@ -69,36 +89,30 @@ class App extends Component {
     this.hotInstance.loadData(sampledata);
   }
 
-  async createPdf() {
-    const { selectedTemplate } = this.state;
-    if (!this.hotInstance) return;
-    const datas = getNotEmptyRowData(this.hotInstance.getSourceData());
-    if (datas.length === 0) {
-      alert('入力がありません。\n出来上がりを確認したい場合はサンプルを読み込んでもう一度作成して下さい。');
-      return;
-    }
-    const blob = await pdfUtil.create(formatData(datas),
-      templates[selectedTemplate].image, templates[selectedTemplate].position);
-    if (pdfUtil.open(blob)) {
-      this.handleOpenModal();
-    } else {
-      alert('すみません！失敗しました！\nChromeでもう一度やり直してください。\nそれでもできない場合はフィードバックから現象を教えて下さい！');
-    }
-  }
-
   render() {
     const { isTemplateEditor, isOpenModal, selectedTemplate } = this.state;
     return (
       <>
         <Header />
-
+        <div style={{ marginBottom: 64 }} />
         {isTemplateEditor && <TemplateEditor />}
-        {!isTemplateEditor && (<><Controls
-          loadSampleData={this.loadSampleData.bind(this)}
-          createPdf={this.createPdf.bind(this)}
-        />
-          <div ref={(node) => { this.hotDom = node; }} /></>)}
-
+        {!isTemplateEditor && (
+        <>
+          <Controls loadSampleData={this.loadSampleData.bind(this)} />
+          <div style={{ display: 'flex' }}>
+            <div ref={(node) => { this.hotContainer = node; }}>
+              <div ref={(node) => { this.hotDom = node; }} />
+            </div>
+            <iframe
+              ref={(node) => { this.iframe = node; }}
+              height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`}
+              width={`${(window.innerWidth / 2)}px`}
+              id="pdfIframe"
+              title="PDF"
+            />
+          </div>
+        </>
+        )}
         <Modal
           open={isOpenModal}
           onClose={this.handleCloseModal.bind(this)}

@@ -11,7 +11,7 @@ window.onload = () => {
 };
 
 export default {
-  create(datas, image, positionData) {
+  getBlob(datas, image, positionData) {
     if (!Array.isArray(datas) || datas.length === 0) {
       return new Promise(resolve => resolve(new Blob([])));
     }

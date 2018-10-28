@@ -9,7 +9,7 @@ const styles = {
 };
 
 function Controls(props) {
-  const { loadSampleData, createPdf } = props;
+  const { loadSampleData } = props;
   return (
     <Grid
       container
@@ -50,16 +50,12 @@ function Controls(props) {
           サンプル
         </Button>
       </Grid>
-      <Grid item xs={6} sm={1}>
-        <Button style={{ display: 'block', margin: '0 auto' }} variant="outlined" size="small" color="primary" onClick={createPdf}>作成</Button>
-      </Grid>
     </Grid>
   );
 }
 
 Controls.propTypes = {
   loadSampleData: PropTypes.func.isRequired,
-  createPdf: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired, // eslint-disable-line
   theme: PropTypes.object.isRequired, // eslint-disable-line
 };

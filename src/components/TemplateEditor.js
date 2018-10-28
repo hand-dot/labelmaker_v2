@@ -34,7 +34,7 @@ const getEmptyData = () => ({
 });
 
 const setIframe = async (pdfData, base64, positionData) => {
-  const blob = await pdfUtil.create(pdfData, base64, positionData);
+  const blob = await pdfUtil.getBlob(pdfData, base64, positionData);
   document.getElementById('pdfIframe').src = URL.createObjectURL(blob);
 };
 
@@ -98,9 +98,8 @@ class TemplateEditor extends Component {
 
   componentDidMount() {
     this.forceUpdate(); // this.iframeを再計算させる
-    const iframe = document.getElementById('pdfIframe');
     const blob = new Blob(['<div>左のテンプレートを編集して下さい。</div>'], { type: 'text/html' });
-    iframe.src = URL.createObjectURL(blob);
+    this.iframe.src = URL.createObjectURL(blob);
   }
 
    handleChangeInput = ({ key, index }) => (e) => {
@@ -157,10 +156,7 @@ class TemplateEditor extends Component {
    render() {
      const { templateName, datas } = this.state;
      return (
-       <Grid
-         container
-         justify="space-between"
-       >
+       <Grid container justify="space-between">
          <Grid item xs={6}>
            <TextField
              style={{ margin: 10 }}
@@ -222,8 +218,9 @@ class TemplateEditor extends Component {
          </Grid>
          <Grid item xs={6}>
            <iframe
+             style={{ position: 'fixed' }}
              ref={(node) => { this.iframe = node; }}
-             height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 25 : 0)}px`}
+             height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`}
              width={`${(window.innerWidth / 2) - 10}px`}
              id="pdfIframe"
              title="PDF"
