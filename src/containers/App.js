@@ -12,7 +12,7 @@ import pdfUtil from '../utils/pdf';
 
 const PDF_REFLESH_MS = 500;
 const windowSeparatorRatio = window.innerWidth * 0.2;
-const emptyIframe = new Blob(['<div>左のテーブルを記入して下さい。</div>'], { type: 'text/html' });
+const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
 // Hotのデータから全て空の行のデータを除去したものを返します。
 const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key])); // eslint-disable-line 

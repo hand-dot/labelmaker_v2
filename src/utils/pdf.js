@@ -12,41 +12,45 @@ window.onload = () => {
 
 export default {
   async getBlob(datas, image, positionData) {
-    if (!Array.isArray(datas) || datas.length === 0) {
-      return new Promise(resolve => resolve(new Blob([])));
+    // fontの読み込みが終わるまで待つ
+    if (!window.pdfMake.fonts) {
+      await util.sleep(1000);
+      return this.getBlob(datas, image, positionData);
     }
-    const clonedDatas = JSON.parse(JSON.stringify(datas));
     const docDefinition = {
       pageSize: 'A4',
       defaultStyle: { font: 'GenShin' },
       content: [],
     };
-
-    clonedDatas.forEach((data, index) => {
+    if (!Array.isArray(datas) || datas.length === 0) {
       docDefinition.content.push({
         image: image || dummyImage,
         absolutePosition: { x: 0, y: 0 },
         width: 594.35,
-        pageBreak: index === 0 ? '' : 'before',
       });
-      Object.keys(positionData).forEach((key) => {
-        const labelData = positionData[key];
-        const textObj = {
-          text: data[key],
-          absolutePosition: {
-            x: util.mm2pt(labelData.position.x),
-            y: util.mm2pt(labelData.position.y),
-          },
-          fontSize: labelData.size,
-          characterSpacing: 'space' in labelData ? labelData.space : undefined,
-          lineHeight: 'lineHeight' in labelData ? labelData.lineHeight : undefined,
-        };
-        docDefinition.content.push(textObj);
+    } else {
+      datas.forEach((data, index) => {
+        docDefinition.content.push({
+          image: image || dummyImage,
+          absolutePosition: { x: 0, y: 0 },
+          width: 594.35,
+          pageBreak: index === 0 ? '' : 'before',
+        });
+        Object.keys(positionData).forEach((key) => {
+          const labelData = positionData[key];
+          const textObj = {
+            text: data[key],
+            absolutePosition: {
+              x: util.mm2pt(labelData.position.x),
+              y: util.mm2pt(labelData.position.y),
+            },
+            fontSize: labelData.size,
+            characterSpacing: 'space' in labelData ? labelData.space : undefined,
+            lineHeight: 'lineHeight' in labelData ? labelData.lineHeight : undefined,
+          };
+          docDefinition.content.push(textObj);
+        });
       });
-    });
-    if (!window.pdfMake.fonts) {
-      await util.sleep(1000);
-      return this.getBlob(datas, image, positionData);
     }
     const pdf = window.pdfMake.createPdf(docDefinition);
     return new Promise(resolve => pdf.getBlob(blob => resolve(blob)));
