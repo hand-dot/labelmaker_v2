@@ -1,7 +1,7 @@
 import regexp from '../../utils/regexp';
 
 describe('zipcode', () => {
-  test('invalid', () => {
+  test('Some patterns', () => {
     expect(regexp.zipcode('12345')).toEqual(false);
     expect(regexp.zipcode('１２３４５６７')).toEqual(false);
     expect(regexp.zipcode('1234567')).toEqual(true);
