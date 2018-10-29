@@ -11,7 +11,7 @@ window.onload = () => {
 };
 
 export default {
-  getBlob(datas, image, positionData) {
+  async getBlob(datas, image, positionData) {
     if (!Array.isArray(datas) || datas.length === 0) {
       return new Promise(resolve => resolve(new Blob([])));
     }
@@ -44,6 +44,10 @@ export default {
         docDefinition.content.push(textObj);
       });
     });
+    if (!window.pdfMake.fonts) {
+      await util.sleep(1000);
+      return this.getBlob(datas, image, positionData);
+    }
     const pdf = window.pdfMake.createPdf(docDefinition);
     return new Promise(resolve => pdf.getBlob(blob => resolve(blob)));
   },

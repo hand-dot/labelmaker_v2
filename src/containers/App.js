@@ -43,9 +43,7 @@ class App extends Component {
       }, PDF_REFLESH_MS),
     });
     this.iframe.src = URL.createObjectURL(emptyIframe);
-    setTimeout(() => {
-      this.loadSampleData();
-    }, 4000); // FIXME 読み込みを待ってからじゃないとpdfmakeで落ちる
+    this.loadSampleData();
   }
 
   handleChangeTemplate(e) {

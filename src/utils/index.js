@@ -26,4 +26,7 @@ export default {
     const pointRatio = 2.8346;
     return parseFloat(mm) * pointRatio;
   },
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
 };
