@@ -18,23 +18,9 @@ describe('getLabelLengthInPage', () => {
   });
 });
 
-describe('fmtSampledataForMultiLabel', () => {
+describe('fmtTemplateForMultiLabel', () => {
   test('Some patterns', () => {
-    expect(templatesUtil.fmtSampledataForMultiLabel(atenaBefore.atena.sampledata))
-      .toEqual(atenaAfter);
-  });
-});
-
-describe('fmtColumnsForMultiLabel', () => {
-  test('Some patterns', () => {
-    expect(templatesUtil.fmtColumnsForMultiLabel(atenaBefore.atena.columns))
-      .toEqual(atenaAfter);
-  });
-});
-
-describe('fmtDataSchemaForMultiLabel', () => {
-  test('Some patterns', () => {
-    expect(templatesUtil.fmtDataSchemaForMultiLabel(atenaBefore.atena.dataSchema))
+    expect(templatesUtil.fmtTemplateForMultiLabel(atenaBefore))
       .toEqual(atenaAfter);
   });
 });

@@ -29,4 +29,18 @@ export default {
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
+  divide(ary, n) {
+    if (!Array.isArray(ary) || isNaN(n)) throw Error('Error: divide unexpected argument'); // eslint-disable-line 
+    let idx = 0;
+    const results = [];
+    while (idx + n < ary.length) {
+      const result = ary.slice(idx, idx + n);
+      results.push(result);
+      idx += n;
+    }
+
+    const rest = ary.slice(idx, ary.length + 1);
+    results.push(rest);
+    return results;
+  },
 };

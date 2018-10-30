@@ -57,3 +57,13 @@ describe('mm2pt', () => {
     expect(() => { utils.mm2pt(null); }).toThrow();
   });
 });
+
+describe('divide', () => {
+  test('divide some patterns', () => {
+    expect(utils.divide([1, 2, 3, 4, 5, 6, 7, 8, 9], 4)).toEqual([[1, 2, 3, 4], [5, 6, 7, 8], [9]]);
+    expect(utils.divide([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)).toEqual([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+    expect(() => { utils.divide('a'); }).toThrow();
+    expect(() => { utils.divide([], 'a'); }).toThrow();
+    expect(() => { utils.divide(); }).toThrow();
+  });
+});
