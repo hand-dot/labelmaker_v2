@@ -146,7 +146,7 @@ class TemplateEditor extends Component {
 
    removeData(index) {
      const { datas } = this.state;
-     if (datas.length === 1) return;
+     if (datas.length === 1 || !window.confirm('削除してもよろしいですか？')) return;
      this.setState({
        datas: datas.filter((_, _index) => _index !== index),
      });

@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import Handsontable from 'handsontable';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import debounce from 'lodash.debounce';
 import 'handsontable/dist/handsontable.full.min.css';
+import Input from '@material-ui/core/Input';
+import FormControl from '@material-ui/core/FormControl';
+import Button from '@material-ui/core/Button';
+import InputLabel from '@material-ui/core/InputLabel';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import Header from '../components/Header';
 import TemplateEditor from '../components/TemplateEditor';
 import '../styles/handsontable-custom.css';
@@ -20,6 +27,7 @@ const getData = (datas, template) => templateUtil.fmtData(datas, template);
 // Hotのデータから全て空の行のデータを除去したものを返します。
 const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key])); // eslint-disable-line 
 
+const styles = {};
 class App extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +42,8 @@ class App extends Component {
     const { selectedTemplate } = this.state;
     if (!this.hotDom) return;
     this.hotInstance = Handsontable(this.hotDom, {
-      height: window.innerHeight - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
+      height: window.innerHeight
+       - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
       contextMenu: true,
@@ -89,20 +98,32 @@ class App extends Component {
   }
 
   render() {
+    const { theme } = this.props;
     const { isTemplateEditor, selectedTemplate } = this.state;
     return (
       <>
-        <Header
-          template={selectedTemplate}
-          templates={Object.keys(templates)}
-          handleChangeTemplate={this.handleChangeTemplate.bind(this)}
-        />
-        <div style={{ marginBottom: 64 }} />
+        <Header />
+        <div style={{ height: theme.mixins.toolbar.minHeight }} />
         {isTemplateEditor && <TemplateEditor />}
         {!isTemplateEditor && (
         <Grid container justify="space-between">
           <Grid item xs={6}>
-            <button type="button" onClick={this.addRow.bind(this)}>+</button>
+            <div style={{
+              padding: 5, display: 'flex', justifyContent: 'row', alignContent: 'center',
+            }}
+            >
+              <FormControl>
+                <InputLabel htmlFor="select-template-helper">テンプレート</InputLabel>
+                <NativeSelect
+                  value={selectedTemplate}
+                  onChange={this.handleChangeTemplate.bind(this)}
+                  input={<Input name="age" id="select-template-helper" />}
+                >
+                  {Object.keys(templates).map(_ => (<option key={_} value={_}>{_}</option>))}
+                </NativeSelect>
+              </FormControl>
+              <Button onClick={this.addRow.bind(this)}>+</Button>
+            </div>
             <div ref={(node) => { this.hotContainer = node; }}>
               <div ref={(node) => { this.hotDom = node; }} />
             </div>
@@ -124,4 +145,9 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired, // eslint-disable-line
+  theme: PropTypes.object.isRequired, // eslint-disable-line
+};
+
+export default withStyles(styles, { withTheme: true })(App);
