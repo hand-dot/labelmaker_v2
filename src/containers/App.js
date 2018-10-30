@@ -26,7 +26,7 @@ class App extends Component {
     this.hotInstance = null;
     this.state = {
       isTemplateEditor: false, // テンプレート開発者用。公開していません。
-      selectedTemplate: 'letterpack',
+      selectedTemplate: 'レターパック',
     };
   }
 

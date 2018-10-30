@@ -1,7 +1,7 @@
-import letterpack from './datas/letterpack.json';
-import atena from './datas/atena.json';
+import レターパック from './datas/レターパック.json';
+import 宛名8 from './datas/宛名8.json';
 
 export default {
-  letterpack,
-  atena,
+  レターパック,
+  宛名8,
 };
