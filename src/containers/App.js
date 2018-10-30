@@ -11,7 +11,7 @@ import templates from '../templates';
 import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
 
-const PDF_REFLESH_MS = 500;
+const PDF_REFLESH_MS = 100;
 const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
@@ -35,7 +35,7 @@ class App extends Component {
     if (!this.hotDom) return;
     this.hotInstance = Handsontable(this.hotDom, {
       height: window.innerHeight - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
-      width: (window.innerWidth / 2) + windowSeparatorRatio,
+      width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
       contextMenu: true,
       colWidths: 150,
