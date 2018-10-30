@@ -9,11 +9,14 @@ import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
 import templates from '../templates';
 import pdfUtil from '../utils/pdf';
+import templateUtil from '../utils/template';
 
 const PDF_REFLESH_MS = 500;
 const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
+const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
+const getData = (datas, template) => templateUtil.fmtData(datas, template);
 // Hotのデータから全て空の行のデータを除去したものを返します。
 const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key])); // eslint-disable-line 
 
@@ -34,10 +37,10 @@ class App extends Component {
       height: window.innerHeight - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio,
       rowHeaders: true,
-      minRows: 50,
-      colWidths: 200,
-      columns: templates[selectedTemplate].columns,
-      dataSchema: templates[selectedTemplate].dataSchema,
+      contextMenu: true,
+      colWidths: 150,
+      columns: getTemplate(selectedTemplate).columns,
+      dataSchema: getTemplate(selectedTemplate).dataSchema,
       afterChange: debounce(() => {
         this.refleshPdf();
       }, PDF_REFLESH_MS),
@@ -52,8 +55,8 @@ class App extends Component {
     if (datas.length !== 0 && !window.confirm('データがすでに入力されていますがテンプレートを変更しますか？')) return;
     const selectedTemplate = e.target.value;
     this.hotInstance.updateSettings({
-      columns: templates[selectedTemplate].columns,
-      dataSchema: templates[selectedTemplate].dataSchema,
+      columns: getTemplate(selectedTemplate).columns,
+      dataSchema: getTemplate(selectedTemplate).dataSchema,
       data: [],
     });
     this.setState({ selectedTemplate });
@@ -62,15 +65,27 @@ class App extends Component {
 
   async refleshPdf() {
     const { selectedTemplate } = this.state;
-    const datas = getNotEmptyRowData(this.hotInstance.getSourceData());
-    const blob = await pdfUtil.getBlob(datas, templates[selectedTemplate].image, templates[selectedTemplate].position);
+    const blob = await pdfUtil.getBlob(
+      getData(this.hotInstance.getSourceData(), templates[selectedTemplate]),
+      getTemplate(selectedTemplate).image,
+      getTemplate(selectedTemplate).position,
+    );
     this.iframe.src = URL.createObjectURL(blob);
   }
 
   loadSampleData() {
     const { selectedTemplate } = this.state;
-    const sampledata = JSON.parse(JSON.stringify(templates[selectedTemplate].sampledata));
+    const sampledata = JSON.parse(JSON.stringify(getTemplate(selectedTemplate).sampledata));
     this.hotInstance.loadData(sampledata);
+  }
+
+  addRow() {
+    if (!this.hotInstance) return;
+    const { selectedTemplate } = this.state;
+    const amount = templateUtil.getLabelLengthInPage(templates[selectedTemplate]);
+    const rowNum = this.hotInstance.getSourceData().length;
+    this.hotInstance.alter('insert_row', rowNum, amount);
+    this.refleshPdf();
   }
 
   render() {
@@ -87,6 +102,7 @@ class App extends Component {
         {!isTemplateEditor && (
         <Grid container justify="space-between">
           <Grid item xs={6}>
+            <button type="button" onClick={this.addRow.bind(this)}>+</button>
             <div ref={(node) => { this.hotContainer = node; }}>
               <div ref={(node) => { this.hotDom = node; }} />
             </div>

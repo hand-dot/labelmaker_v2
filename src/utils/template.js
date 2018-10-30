@@ -10,7 +10,7 @@ export default {
     const rowNums = template.columns.map(column => column.data.match(/^{\d}/)[0].replace(/{|}/g, ''));
     return Math.max(...rowNums);
   },
-  fmtTemplateForMultiLabel(template) {
+  fmtTemplate(template) {
     if (!this.isMultiLabel(template)) return template;
     const clonedTemplate = JSON.parse(JSON.stringify(template));
     const labelInDataLength = clonedTemplate.columns.length
@@ -34,5 +34,17 @@ export default {
       clonedTemplate.dataSchema[key] = null;
     });
     return clonedTemplate;
+  },
+  fmtData(datas, template) {
+    if (!this.isMultiLabel(template)) return datas;
+    const returnData = util.divide(datas, this.getLabelLengthInPage(template))
+      .map(labelsInPage => labelsInPage.reduce((obj, data, index) => {
+        Object.entries(data).forEach((entry) => {
+          const [key, value] = entry;
+          obj[`{${index + 1}}${key}`] = value; // eslint-disable-line 
+        });
+        return obj;
+      }, {}));
+    return returnData;
   },
 };
