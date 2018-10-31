@@ -50,8 +50,16 @@ class App extends Component {
       colWidths: 150,
       columns: getTemplate(selectedTemplate).columns,
       dataSchema: getTemplate(selectedTemplate).dataSchema,
-      afterChange: debounce(() => {
-        this.refleshPdf();
+      afterChange: debounce((changes) => {
+        if (!changes) {
+          this.refleshPdf();
+          return;
+        }
+        const needReflech = changes.some((change) => {
+          const [,, oldVal, newVal] = change;
+          return oldVal !== newVal;
+        });
+        if (needReflech) this.refleshPdf();
       }, PDF_REFLESH_MS),
     });
     this.iframe.src = URL.createObjectURL(emptyIframe);
