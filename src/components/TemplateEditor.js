@@ -1,16 +1,37 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
-import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
-import Button from '@material-ui/core/Button';
+import Handsontable from 'handsontable';
+import 'handsontable/dist/handsontable.full.min.css';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
+import '../styles/handsontable-custom.css';
 import pdfUtil from '../utils/pdf';
+import util from '../utils';
 
 // このコンポーネントはテンプレート開発者用。公開していません。
 const PDF_REFLESH_MS = 10;
+const windowSeparatorRatio = window.innerWidth * 0.2;
 const template = {};
-const stringProps = ['Column', 'SampleData'];
+
+const hotColumns = [
+  { data: 'Column', title: 'Column' },
+  {
+    data: 'x(mm)', title: 'x(mm)', width: 80, type: 'numeric',
+  },
+  {
+    data: 'y(mm)', title: 'y(mm)', width: 80, type: 'numeric',
+  },
+  {
+    data: 'size(pt)', title: 'size(pt)', width: 80, type: 'numeric',
+  },
+  {
+    data: 'space(pt)', title: 'space(pt)', width: 80, type: 'numeric',
+  },
+  {
+    data: 'line-height(em)', title: 'line-height(em)', width: 120, type: 'numeric',
+  },
+  { data: 'SampleData', title: 'SampleData' },
+];
 
 const downloadTemplate = (templateName) => {
   const blob = new Blob([JSON.stringify(template)], { type: 'application/json' });
@@ -21,17 +42,6 @@ const downloadTemplate = (templateName) => {
   link.click();
   URL.revokeObjectURL(url);
 };
-
-const getEmptyData = () => ({
-  id: Date.now(),
-  Column: '',
-  'x(mm)': 0,
-  'y(mm)': 0,
-  'size(pt)': 18,
-  'space(pt)': 0,
-  'line-height(em)': 1,
-  SampleData: '',
-});
 
 const setIframe = async (pdfData, base64, positionData) => {
   const blob = await pdfUtil.getBlob(pdfData, base64, positionData);
@@ -51,12 +61,10 @@ const setTemplate = (pdfData, image, positionData) => {
 const formatTemplate2State = ({
   templateName, image, columns, sampledata, position,
 }) => {
-  const now = Date.now();
   const datas = [];
-  columns.forEach((column, index) => {
+  columns.forEach((column) => {
     const key = column.data;
     const data = {
-      id: now + index,
       Column: key,
       'x(mm)': position[key].position.x,
       'y(mm)': position[key].position.y,
@@ -67,7 +75,7 @@ const formatTemplate2State = ({
     };
     datas.push(data);
   });
-  return { templateName, image, datas };
+  return { templateName: templateName || '', image: image || null, datas };
 };
 
 const refleshPdf = debounce((datas, image) => {
@@ -89,172 +97,116 @@ const refleshPdf = debounce((datas, image) => {
 class TemplateEditor extends Component {
   constructor(props) {
     super(props);
+    this.hotInstance = null;
     this.state = {
       templateName: '',
       image: null,
-      datas: [getEmptyData()],
     };
   }
 
   componentDidMount() {
+    if (!this.hotDom) return;
+    this.hotInstance = Handsontable(this.hotDom, {
+      height: window.innerHeight
+       - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
+      width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
+      rowHeaders: true,
+      minRows: 50,
+      colWidths: (((window.innerWidth / 2) + windowSeparatorRatio - 55)
+       - hotColumns.reduce((num, column) => {
+        num += column.width || 0; // eslint-disable-line 
+         return num;
+       }, 0)) / 2,
+      columns: hotColumns,
+      dataSchema: {
+        Column: '', 'x(mm)': 0, 'y(mm)': 0, 'size(pt)': 18, 'space(pt)': 0, 'line-height(em)': 1, SampleData: '',
+      },
+      afterChange: debounce((changes) => {
+        if (!changes) return;
+        const needReflech = changes.some((change) => {
+          const [,, oldVal, newVal] = change;
+          return oldVal !== newVal;
+        });
+        if (needReflech) {
+          const { image } = this.state;
+          refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), image);
+        }
+      }, PDF_REFLESH_MS),
+    });
     this.forceUpdate(); // this.iframeを再計算させる
     const blob = new Blob(['<div>左のテンプレートを編集して下さい。</div>'], { type: 'text/html' });
     this.iframe.src = URL.createObjectURL(blob);
   }
 
-   handleChangeInput = ({ key, index }) => (e) => {
-     const { datas, image } = this.state;
-     const clonedDatas = JSON.parse(JSON.stringify(datas));
-     clonedDatas[index][key] = e.target.value;
-     this.setState({ datas: clonedDatas });
-     refleshPdf(clonedDatas, image);
-   };
+  handleChangeTemplateName(e) {
+    this.setState({ templateName: e.target.value });
+    template.templateName = e.target.value;
+  }
 
-   handleChangeTemplateName(e) {
-     this.setState({ templateName: e.target.value });
-     template.templateName = e.target.value;
-   }
-
-   handleChangeImage(event) {
-     const { datas } = this.state;
+  handleChangeImage(event) {
      const files = event.target.files; // eslint-disable-line
-     const fileReader = new FileReader();
-     fileReader.addEventListener('load', (e) => {
+    const fileReader = new FileReader();
+    fileReader.addEventListener('load', (e) => {
        this.setState({ image: e.target.result }); // eslint-disable-line
-       refleshPdf(datas, e.target.result);
-     });
-     fileReader.readAsDataURL(files[0]);
-   }
+      refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), e.target.result);
+    });
+    fileReader.readAsDataURL(files[0]);
+  }
 
-   handleChangeTemplate(event) {
+  handleChangeTemplate(event) {
     const files = event.target.files; // eslint-disable-line
-     const fileReader = new FileReader();
-     fileReader.addEventListener('load', (e) => {
+    const fileReader = new FileReader();
+    fileReader.addEventListener('load', (e) => {
         const {templateName, image, datas} = formatTemplate2State(JSON.parse(e.target.result)); // eslint-disable-line
-        this.setState({ templateName, datas, image }); // eslint-disable-line
-       refleshPdf(datas, image);
-     });
-     fileReader.readAsText(files[0]);
-   }
+      this.hotInstance.updateSettings({ data: datas });
+        this.setState({ templateName: templateName, image }); // eslint-disable-line
+      refleshPdf(datas, image);
+    });
+    fileReader.readAsText(files[0]);
+  }
 
-   addData() {
-     const { datas } = this.state;
-     this.setState({
-       datas: datas.concat(getEmptyData()),
-     });
-   }
-
-   removeData(index) {
-     const { datas } = this.state;
-     if (datas.length === 1 || !window.confirm('削除してもよろしいですか？')) return;
-     this.setState({
-       datas: datas.filter((_, _index) => _index !== index),
-     });
-     this.forceUpdate(); // 削除処理をiframeに反映させる
-   }
-
-   render() {
-     const { templateName, datas } = this.state;
-     return (
-       <Grid container justify="space-between">
-         <Grid item xs={6}>
-           <TextField
-             style={{ margin: 10 }}
-             label="templateName"
-             value={templateName}
-             onChange={this.handleChangeTemplateName.bind(this)}
-             InputLabelProps={{ shrink: true }}
-             variant="outlined"
-           />
-           <div style={{
-             padding: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'bottom',
-           }}
-           >
-             <label htmlFor="image">
+  render() {
+    const { templateName } = this.state;
+    return (
+      <Grid container justify="space-between">
+        <Grid item xs={6}>
+          <TextField
+            style={{ margin: 10 }}
+            label="templateName"
+            value={templateName}
+            onChange={this.handleChangeTemplateName.bind(this)}
+            InputLabelProps={{ shrink: true }}
+            variant="outlined"
+          />
+          <div style={{
+            padding: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'bottom',
+          }}
+          >
+            <label htmlFor="image">
               Image:
-               <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeImage.bind(this)} />
-             </label>
-             <label htmlFor="importTemplate">
+              <input id="image" type="file" accept="image/*" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeImage.bind(this)} />
+            </label>
+            <label htmlFor="importTemplate">
               Load:
-               <input id="importTemplate" type="file" accept="application/json" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeTemplate.bind(this)} />
-             </label>
-             <button type="button" onClick={(() => { downloadTemplate(templateName); })}>Download</button>
-           </div>
-           {datas.map((data, index) => (
-             <Fragment key={data.id}>
-               <form style={{
-                 padding: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-               }}
-               >
-                 {Object.keys(data).map(key => (
-                   key === 'id' ? null : (
-                     <MyTextField
-                       key={key}
-                       target={key}
-                       data={data}
-                       index={index}
-                       type={stringProps.includes(key) ? 'text' : 'number'}
-                       handleChange={this.handleChangeInput.bind(this)}
-                     />
-                   )
-                 ))}
-                 <div style={{ width: 70, display: 'flex', justifyContent: 'flex-end' }}>
-                   <Button size="small" color="primary" disabled={datas.length === 1} onClick={this.removeData.bind(this, index)}>
-                      -
-                   </Button>
-                 </div>
-               </form>
-               <Divider />
-             </Fragment>
-           ))}
-           <div style={{
-             padding: 10, marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center',
-           }}
-           >
-             <Button size="small" color="primary" onClick={this.addData.bind(this)}>
-              +
-             </Button>
-           </div>
-         </Grid>
-         <Grid item xs={6}>
-           <iframe
-             style={{ position: 'fixed' }}
-             ref={(node) => { this.iframe = node; }}
-             height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`}
-             width={`${(window.innerWidth / 2) - 10}px`}
-             id="pdfIframe"
-             title="PDF"
-           />
-         </Grid>
-       </Grid>
-     );
-   }
+              <input id="importTemplate" type="file" accept="application/json" ref={(node) => { this.fileInput = node; }} onChange={this.handleChangeTemplate.bind(this)} />
+            </label>
+            <button type="button" onClick={(() => { downloadTemplate(templateName); })}>Download</button>
+          </div>
+          <div ref={(node) => { this.hotDom = node; }} />
+        </Grid>
+        <Grid item xs={6}>
+          <iframe
+            style={{ position: 'fixed', right: 0, border: '1px solid #ccc' }}
+            ref={(node) => { this.iframe = node; }}
+            height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`}
+            width={`${(window.innerWidth / 2) - windowSeparatorRatio}px`}
+            id="pdfIframe"
+            title="PDF"
+          />
+        </Grid>
+      </Grid>
+    );
+  }
 }
-
-
-function MyTextField({
-  target, data, index, type, handleChange,
-}) {
-  return (
-    <TextField
-      style={{ width: type === 'text' ? 'auto' : 130 }}
-      label={target}
-      value={data[target]}
-      onChange={handleChange({ key: target, index })}
-      type={type}
-      multiline={type === 'text'}
-      InputLabelProps={{ shrink: true }}
-      variant="outlined"
-    />
-  );
-}
-
-MyTextField.propTypes = {
-  target: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired, // eslint-disable-line
-  index: PropTypes.number.isRequired,
-  type: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-};
 
 export default TemplateEditor;

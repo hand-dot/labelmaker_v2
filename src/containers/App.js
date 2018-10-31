@@ -15,6 +15,7 @@ import TemplateEditor from '../components/TemplateEditor';
 import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
 import templates from '../templates';
+import util from '../utils';
 import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
 
@@ -24,8 +25,6 @@ const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
-// Hotのデータから全て空の行のデータを除去したものを返します。
-const getNotEmptyRowData = sourceData => sourceData.filter(data => Object.keys(data).some(key => data[key])); // eslint-disable-line 
 
 const styles = {};
 class App extends Component {
@@ -43,10 +42,9 @@ class App extends Component {
     if (!this.hotDom) return;
     this.hotInstance = Handsontable(this.hotDom, {
       height: window.innerHeight
-       - (this.hotContainer ? this.hotContainer.getBoundingClientRect().top : 0),
+       - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
-      contextMenu: true,
       colWidths: 150,
       columns: getTemplate(selectedTemplate).columns,
       dataSchema: getTemplate(selectedTemplate).dataSchema,
@@ -68,7 +66,7 @@ class App extends Component {
 
   handleChangeTemplate(e) {
     if (!this.hotInstance) return;
-    const datas = getNotEmptyRowData(this.hotInstance.getSourceData());
+    const datas = util.getNotEmptyRowData(this.hotInstance.getSourceData());
     if (datas.length !== 0 && !window.confirm('データがすでに入力されていますがテンプレートを変更しますか？')) return;
     const selectedTemplate = e.target.value;
     this.hotInstance.updateSettings({
@@ -132,9 +130,7 @@ class App extends Component {
               </FormControl>
               <Button onClick={this.addRow.bind(this)}>+</Button>
             </div>
-            <div ref={(node) => { this.hotContainer = node; }}>
-              <div ref={(node) => { this.hotDom = node; }} />
-            </div>
+            <div ref={(node) => { this.hotDom = node; }} />
           </Grid>
           <Grid item xs={6}>
             <iframe
