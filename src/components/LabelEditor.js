@@ -39,6 +39,7 @@ class LabelEditor extends Component {
        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
+      stretchH: 'all',
       contextMenu: true,
       colWidths: 150,
       columns: getTemplate(selectedTemplate).columns,
