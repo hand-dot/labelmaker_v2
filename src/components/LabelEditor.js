@@ -22,7 +22,7 @@ const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
 
-class App extends Component {
+class LabelEditor extends Component {
   constructor(props) {
     super(props);
     this.hotInstance = null;
@@ -39,6 +39,7 @@ class App extends Component {
        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
+      contextMenu: true,
       colWidths: 150,
       columns: getTemplate(selectedTemplate).columns,
       dataSchema: getTemplate(selectedTemplate).dataSchema,
@@ -134,4 +135,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default LabelEditor;

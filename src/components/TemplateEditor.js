@@ -33,6 +33,10 @@ const hotColumns = [
   { data: 'SampleData', title: 'SampleData' },
 ];
 
+const dataSchema = {
+  Column: '', 'x(mm)': 0, 'y(mm)': 0, 'size(pt)': 18, 'space(pt)': 0, 'line-height(em)': 1, SampleData: '',
+};
+
 const downloadTemplate = (templateName) => {
   const blob = new Blob([JSON.stringify(template)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -111,16 +115,15 @@ class TemplateEditor extends Component {
        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
+      contextMenu: true,
       minRows: 50,
-      colWidths: (((window.innerWidth / 2) + windowSeparatorRatio - 55)
-       - hotColumns.reduce((num, column) => {
-        num += column.width || 0; // eslint-disable-line 
-         return num;
-       }, 0)) / 2,
+      colWidths: ((((window.innerWidth / 2) + windowSeparatorRatio)
+      - hotColumns.reduce((num, column) => {
+       num += column.width || 0; // eslint-disable-line 
+        return num;
+      }, 0)) / 2) - 35,
       columns: hotColumns,
-      dataSchema: {
-        Column: '', 'x(mm)': 0, 'y(mm)': 0, 'size(pt)': 18, 'space(pt)': 0, 'line-height(em)': 1, SampleData: '',
-      },
+      dataSchema,
       afterChange: debounce((changes) => {
         if (!changes) return;
         const needReflech = changes.some((change) => {
@@ -129,11 +132,10 @@ class TemplateEditor extends Component {
         });
         if (needReflech) {
           const { image } = this.state;
-          refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), image);
+          refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData(), dataSchema), image);
         }
       }, PDF_REFLESH_MS),
     });
-    this.forceUpdate(); // this.iframeを再計算させる
     const blob = new Blob(['<div>左のテンプレートを編集して下さい。</div>'], { type: 'text/html' });
     this.iframe.src = URL.createObjectURL(blob);
   }
@@ -149,7 +151,8 @@ class TemplateEditor extends Component {
     fileReader.addEventListener('load', (e) => {
       this.setState({ image: e.target.result });
       if (this.hotInstance) {
-        refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), e.target.result);
+        refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData(), dataSchema),
+          e.target.result);
       }
     });
     fileReader.readAsDataURL(files[0]);

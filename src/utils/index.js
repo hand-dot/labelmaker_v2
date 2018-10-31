@@ -43,7 +43,8 @@ export default {
     results.push(rest);
     return results;
   },
-  getNotEmptyRowData(sourceData) {
-    return sourceData.filter(data => Object.keys(data).some(key => data[key]));
+  getNotEmptyRowData(sourceData, dataSchema) {
+    return sourceData.filter(data => Object.keys(data)
+      .some(key => (dataSchema ? dataSchema[key] !== data[key] : data[key])));
   },
 };
