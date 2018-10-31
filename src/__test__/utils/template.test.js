@@ -10,15 +10,15 @@ import atenaAfter from '../templates/atena_after.json';
 
 describe('isMultiLabel', () => {
   test('Some patterns', () => {
-    expect(templatesUtil.isMultiLabel(templates.letterpack)).toEqual(false);
-    expect(templatesUtil.isMultiLabel(templates.atena)).toEqual(true);
+    expect(templatesUtil.isMultiLabel(templates.レターパック)).toEqual(false);
+    expect(templatesUtil.isMultiLabel(templates.宛名8)).toEqual(true);
   });
 });
 
 describe('getLabelLengthInPage', () => {
   test('Some patterns', () => {
-    expect(templatesUtil.getLabelLengthInPage(templates.letterpack)).toEqual(1);
-    expect(templatesUtil.getLabelLengthInPage(templates.atena)).toEqual(8);
+    expect(templatesUtil.getLabelLengthInPage(templates.レターパック)).toEqual(1);
+    expect(templatesUtil.getLabelLengthInPage(templates.宛名8)).toEqual(8);
   });
 });
 
@@ -31,9 +31,9 @@ describe('fmtTemplate', () => {
 
 describe('fmtData', () => {
   test('Some patterns', () => {
-    expect(templatesUtil.fmtData(dataBefore1, templates.atena))
+    expect(templatesUtil.fmtData(dataBefore1, templates.宛名8))
       .toEqual(dataAfter1);
-    expect(templatesUtil.fmtData(dataBefore2, templates.atena))
+    expect(templatesUtil.fmtData(dataBefore2, templates.宛名8))
       .toEqual(dataAfter2);
   });
 });
