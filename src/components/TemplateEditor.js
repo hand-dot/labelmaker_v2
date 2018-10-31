@@ -147,8 +147,10 @@ class TemplateEditor extends Component {
      const files = event.target.files; // eslint-disable-line
     const fileReader = new FileReader();
     fileReader.addEventListener('load', (e) => {
-       this.setState({ image: e.target.result }); // eslint-disable-line
-      refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), e.target.result);
+      this.setState({ image: e.target.result });
+      if (this.hotInstance) {
+        refleshPdf(util.getNotEmptyRowData(this.hotInstance.getSourceData()), e.target.result);
+      }
     });
     fileReader.readAsDataURL(files[0]);
   }
@@ -157,9 +159,9 @@ class TemplateEditor extends Component {
     const files = event.target.files; // eslint-disable-line
     const fileReader = new FileReader();
     fileReader.addEventListener('load', (e) => {
-        const {templateName, image, datas} = formatTemplate2State(JSON.parse(e.target.result)); // eslint-disable-line
-      this.hotInstance.updateSettings({ data: datas });
-        this.setState({ templateName: templateName, image }); // eslint-disable-line
+      const { templateName, image, datas } = formatTemplate2State(JSON.parse(e.target.result));
+      if (this.hotInstance) this.hotInstance.updateSettings({ data: datas });
+      this.setState({ templateName, image });
       refleshPdf(datas, image);
     });
     fileReader.readAsText(files[0]);
