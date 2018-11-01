@@ -38,11 +38,15 @@ const dataSchema = {
 };
 
 const downloadTemplate = (templateName) => {
+  if (util.isEmpty(template)) {
+    alert('テンプレートを編集してください。');
+    return;
+  }
   const blob = new Blob([JSON.stringify(template)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${templateName}.json`;
+  link.download = `${templateName || 'notitle'}.json`;
   link.click();
   URL.revokeObjectURL(url);
 };
@@ -64,7 +68,7 @@ const setTemplate = (pdfData, image, positionData) => {
 };
 
 const formatTemplate2State = ({
-  templateName, image, columns, sampledata, position,
+  image, columns, sampledata, position,
 }) => {
   const datas = [];
   columns.forEach((column) => {
@@ -80,7 +84,7 @@ const formatTemplate2State = ({
     };
     datas.push(data);
   });
-  return { templateName: templateName || '', image: image || null, datas };
+  return { image: image || null, datas };
 };
 
 const refleshPdf = debounce((datas, image) => {
@@ -163,14 +167,16 @@ class TemplateEditor extends Component {
     const files = event.target.files; // eslint-disable-line
     const fileReader = new FileReader();
     fileReader.addEventListener('load', (e) => {
-      const { templateName, image, datas } = formatTemplate2State(JSON.parse(e.target.result));
+      const { image, datas } = formatTemplate2State(JSON.parse(e.target.result));
       if (this.hotInstance) {
         this.hotInstance.updateSettings({ data: JSON.parse(JSON.stringify(datas)) });
       }
-      this.setState({ templateName, image });
+      this.setState({ templateName: files[0].name.replace('.json', ''), image });
       refleshPdf(datas, image);
     });
-    fileReader.readAsText(files[0]);
+    if (files[0]) {
+      fileReader.readAsText(files[0]);
+    }
   }
 
   render() {

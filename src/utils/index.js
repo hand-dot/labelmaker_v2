@@ -47,4 +47,7 @@ export default {
     return sourceData.filter(data => Object.keys(data)
       .some(key => (dataSchema ? dataSchema[key] !== data[key] : data[key])));
   },
+  isEmpty(obj) {
+    return !Object.keys(obj).length;
+  },
 };
