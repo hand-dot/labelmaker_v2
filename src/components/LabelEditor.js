@@ -6,6 +6,7 @@ import 'handsontable/dist/handsontable.full.min.css';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import Typography from '@material-ui/core/Typography';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
@@ -107,23 +108,21 @@ class LabelEditor extends Component {
       <Grid container justify="space-between">
         <Grid item xs={6}>
           <div style={{ padding: 5, display: 'flex', alignContent: 'center' }}>
-            <FormControl margin="none" style={{ width: 150 }}>
+            <FormControl margin="none">
               <InputLabel htmlFor="select-template-helper">テンプレート</InputLabel>
               <NativeSelect
                 value={selectedTemplate}
-                variant="outlined"
                 onChange={this.handleChangeTemplate.bind(this)}
                 input={<Input name="template" id="select-template-helper" />}
               >
                 {Object.keys(templates).map(_ => (<option key={_} value={_}>{_}</option>))}
               </NativeSelect>
             </FormControl>
-            <p style={{ display: 'flex', alignItems: 'center', margin: '0 20px' }}>x</p>
-            <FormControl margin="none" style={{ width: 70 }}>
+            <Typography style={{ display: 'flex', alignItems: 'center', margin: '0 20px' }}>x</Typography>
+            <FormControl margin="none">
               <InputLabel htmlFor="select-page-helper">枚数</InputLabel>
               <NativeSelect
                 value={page}
-                variant="outlined"
                 onChange={this.handleChangePage.bind(this)}
                 input={<Input name="page" id="select-page-helper" />}
               >
@@ -131,15 +130,12 @@ class LabelEditor extends Component {
                   .map(_ => (<option key={_} value={_}>{_}</option>))}
               </NativeSelect>
             </FormControl>
-            <p style={{
-              display: 'flex', alignItems: 'center', marginLeft: 20,
-            }}
-            >
+            <Typography style={{ display: 'flex', alignItems: 'center', marginLeft: 20 }}>
               =
               {' '}
               {templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * page}
               セット
-            </p>
+            </Typography>
           </div>
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>

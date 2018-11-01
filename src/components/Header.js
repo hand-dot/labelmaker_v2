@@ -17,7 +17,7 @@ const styles = {
 function Header(props) {
   const { classes } = props;
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" style={{ background: '#24292e' }}>
       <Toolbar>
         <Typography color="inherit" className={classes.grow}>
         レターパックラベルを一括作成！
