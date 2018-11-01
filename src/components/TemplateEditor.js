@@ -57,9 +57,10 @@ const setTemplate = (pdfData, image, positionData) => {
   template.position = positionData;
   template.image = image;
   template.columns = Object.keys(pdfData[0]).map(key => ({ data: key, title: key }));
-  const dataSchema = {};
-  Object.keys(pdfData[0]).forEach((key) => { dataSchema[key] = null; });
-  template.dataSchema = dataSchema;
+  template.dataSchema = Object.keys(pdfData[0]).reduce((obj, key) => {
+    obj[key] = null; // eslint-disable-line 
+    return obj;
+  }, {});
 };
 
 const formatTemplate2State = ({
@@ -163,7 +164,9 @@ class TemplateEditor extends Component {
     const fileReader = new FileReader();
     fileReader.addEventListener('load', (e) => {
       const { templateName, image, datas } = formatTemplate2State(JSON.parse(e.target.result));
-      if (this.hotInstance) this.hotInstance.updateSettings({ data: datas });
+      if (this.hotInstance) {
+        this.hotInstance.updateSettings({ data: JSON.parse(JSON.stringify(datas)) });
+      }
       this.setState({ templateName, image });
       refleshPdf(datas, image);
     });
