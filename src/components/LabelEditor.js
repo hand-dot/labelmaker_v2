@@ -5,7 +5,6 @@ import debounce from 'lodash.debounce';
 import 'handsontable/dist/handsontable.full.min.css';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
-import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import '../styles/handsontable-custom.css';
@@ -27,6 +26,7 @@ class LabelEditor extends Component {
     super(props);
     this.hotInstance = null;
     this.state = {
+      page: 1,
       selectedTemplate: 'レターパック',
     };
   }
@@ -39,9 +39,9 @@ class LabelEditor extends Component {
        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
+      allowInsertRow: false,
       stretchH: 'all',
-      contextMenu: true,
-      colWidths: 150,
+      colWidths: 140,
       columns: getTemplate(selectedTemplate).columns,
       dataSchema: getTemplate(selectedTemplate).dataSchema,
       afterChange: debounce((changes) => {
@@ -70,8 +70,19 @@ class LabelEditor extends Component {
       dataSchema: getTemplate(selectedTemplate).dataSchema,
       data: [],
     });
-    this.setState({ selectedTemplate });
+    this.setState({ selectedTemplate, page: 1 });
     setTimeout(() => { this.loadSampleData(); });
+  }
+
+  handleChangePage(e) {
+    const { selectedTemplate } = this.state;
+    this.setState({ page: e.target.value });
+    if (!this.hotInstance) return;
+    const amount = templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * e.target.value;
+    const rowCount = this.hotInstance.getSourceData().length;
+    const isRemove = rowCount > amount;
+    const arg = isRemove ? ['remove_row', amount, rowCount - amount] : ['insert_row', rowCount, amount - rowCount];
+    this.hotInstance.alter(...arg);
   }
 
   async refleshPdf() {
@@ -90,35 +101,45 @@ class LabelEditor extends Component {
     this.hotInstance.loadData(sampledata);
   }
 
-  addRow() {
-    if (!this.hotInstance) return;
-    const { selectedTemplate } = this.state;
-    const amount = templateUtil.getLabelLengthInPage(templates[selectedTemplate]);
-    const rowNum = this.hotInstance.getSourceData().length;
-    this.hotInstance.alter('insert_row', rowNum, amount);
-    this.refleshPdf();
-  }
-
   render() {
-    const { selectedTemplate } = this.state;
+    const { selectedTemplate, page } = this.state;
     return (
       <Grid container justify="space-between">
         <Grid item xs={6}>
-          <div style={{
-            padding: 5, display: 'flex', justifyContent: 'row', alignContent: 'center',
-          }}
-          >
-            <FormControl>
+          <div style={{ padding: 5, display: 'flex', alignContent: 'center' }}>
+            <FormControl margin="none" style={{ width: 150 }}>
               <InputLabel htmlFor="select-template-helper">テンプレート</InputLabel>
               <NativeSelect
                 value={selectedTemplate}
+                variant="outlined"
                 onChange={this.handleChangeTemplate.bind(this)}
-                input={<Input name="age" id="select-template-helper" />}
+                input={<Input name="template" id="select-template-helper" />}
               >
                 {Object.keys(templates).map(_ => (<option key={_} value={_}>{_}</option>))}
               </NativeSelect>
             </FormControl>
-            <Button onClick={this.addRow.bind(this)}>+</Button>
+            <p style={{ display: 'flex', alignItems: 'center', margin: '0 20px' }}>x</p>
+            <FormControl margin="none" style={{ width: 70 }}>
+              <InputLabel htmlFor="select-page-helper">枚数</InputLabel>
+              <NativeSelect
+                value={page}
+                variant="outlined"
+                onChange={this.handleChangePage.bind(this)}
+                input={<Input name="page" id="select-page-helper" />}
+              >
+                {[...Array(30).keys()].map(i => i + 1)
+                  .map(_ => (<option key={_} value={_}>{_}</option>))}
+              </NativeSelect>
+            </FormControl>
+            <p style={{
+              display: 'flex', alignItems: 'center', marginLeft: 20,
+            }}
+            >
+              =
+              {' '}
+              {templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * page}
+              セット
+            </p>
           </div>
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>
