@@ -33,7 +33,7 @@ export default {
         docDefinition.content.push({
           image: image || dummyImage,
           absolutePosition: { x: 0, y: 0 },
-          width: 594.35,
+          width: 595,
           pageBreak: index === 0 ? '' : 'before',
         });
         Object.keys(positionData).forEach((key) => {
