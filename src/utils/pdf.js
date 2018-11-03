@@ -39,7 +39,7 @@ export default {
         Object.keys(positionData).forEach((key) => {
           const labelData = positionData[key];
           const textObj = {
-            text: data[key],
+            text: util.zenkaku2hankaku(data[key]),
             absolutePosition: {
               x: util.mm2pt(labelData.position.x),
               y: util.mm2pt(labelData.position.y),
