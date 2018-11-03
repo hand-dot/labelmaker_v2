@@ -25,10 +25,11 @@ const getData = (datas, template) => templateUtil.fmtData(datas, template);
 class LabelEditor extends Component {
   constructor(props) {
     super(props);
+    this.refleshPdf = debounce(this.refleshPdf, PDF_REFLESH_MS);
     this.hotInstance = null;
     this.state = {
       page: 1,
-      selectedTemplate: '出品者向けラベル24面',
+      selectedTemplate: '宛名8面',
     };
   }
 
@@ -46,7 +47,7 @@ class LabelEditor extends Component {
       colWidths: 140,
       columns: getTemplate(selectedTemplate).columns,
       dataSchema: getTemplate(selectedTemplate).dataSchema,
-      afterChange: debounce((changes) => {
+      afterChange: (changes) => {
         if (!changes) {
           this.refleshPdf();
           return;
@@ -56,7 +57,7 @@ class LabelEditor extends Component {
           return oldVal !== newVal;
         });
         if (needReflech) this.refleshPdf();
-      }, PDF_REFLESH_MS),
+      },
     });
     this.iframe.src = URL.createObjectURL(emptyIframe);
     this.loadSampleData();
@@ -72,8 +73,9 @@ class LabelEditor extends Component {
       dataSchema: getTemplate(selectedTemplate).dataSchema,
       data: [],
     });
-    this.setState({ selectedTemplate, page: 1 });
-    setTimeout(() => { this.loadSampleData(); });
+    this.setState({ selectedTemplate, page: 1 }, () => {
+      this.loadSampleData();
+    });
   }
 
   handleChangePage(e) {
@@ -85,15 +87,18 @@ class LabelEditor extends Component {
     const isRemove = rowCount > amount;
     const arg = isRemove ? ['remove_row', amount, rowCount - amount] : ['insert_row', rowCount, amount - rowCount];
     this.hotInstance.alter(...arg);
+    this.refleshPdf();
   }
 
   async refleshPdf() {
     const { selectedTemplate } = this.state;
+    // FIXME START パフォーマンスが問題になるコード(ローディングを出した方がいい)
     const blob = await pdfUtil.getBlob(
       getData(this.hotInstance.getSourceData(), templates[selectedTemplate]),
       getTemplate(selectedTemplate).image,
       getTemplate(selectedTemplate).position,
     );
+    // FIXME ENDパフォーマンスが問題になるコード(ローディングを出した方がいい)
     this.iframe.src = URL.createObjectURL(blob);
   }
 
@@ -101,6 +106,7 @@ class LabelEditor extends Component {
     const { selectedTemplate } = this.state;
     const sampledata = JSON.parse(JSON.stringify(getTemplate(selectedTemplate).sampledata));
     this.hotInstance.loadData(sampledata);
+    this.refleshPdf();
   }
 
   render() {
@@ -127,7 +133,7 @@ class LabelEditor extends Component {
                 onChange={this.handleChangePage.bind(this)}
                 input={<Input name="page" id="select-page-helper" />}
               >
-                {[...Array(30).keys()].map(i => i + 1)
+                {[...Array(10).keys()].map(i => i + 1)
                   .map(_ => (<option key={_} value={_}>{_}</option>))}
               </NativeSelect>
             </FormControl>

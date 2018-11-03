@@ -4,8 +4,8 @@ import 出品者向けラベル24面 from './datas/出品者向けラベル24面
 import スマートレター from './datas/スマートレター.json';
 
 export default {
-  出品者向けラベル24面,
   宛名8面,
+  出品者向けラベル24面,
   レターパック,
   スマートレター,
 };
