@@ -16,6 +16,7 @@ import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
 
 const PDF_REFLESH_MS = 100;
+const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
@@ -37,7 +38,7 @@ class LabelEditor extends Component {
     this.hotInstance = Handsontable(this.hotDom, {
       height: window.innerHeight
        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
-      width: (window.innerWidth / 2) - 1,
+      width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
       manualColumnMove: true,
       allowInsertRow: false,
@@ -144,7 +145,7 @@ class LabelEditor extends Component {
             style={{ position: 'fixed', right: 0, border: '1px solid #ccc' }}
             ref={(node) => { this.iframe = node; }}
             height={`${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`}
-            width={`${(window.innerWidth / 2)}px`}
+            width={`${(window.innerWidth / 2) - windowSeparatorRatio}px`}
             title="PDF"
           />
         </Grid>
