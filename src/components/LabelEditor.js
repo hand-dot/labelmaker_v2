@@ -16,7 +16,7 @@ import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
 
 const PDF_REFLESH_MS = 100;
-const windowSeparatorRatio = window.innerWidth * 0.2;
+const windowSeparatorRatio = window.innerWidth * 0.1;
 const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
