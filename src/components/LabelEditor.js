@@ -83,14 +83,22 @@ class LabelEditor extends Component {
   }
 
   handleChangePage(e) {
-    const { selectedTemplate } = this.state;
-    this.setState({ page: e.target.value });
+    const { selectedTemplate, page } = this.state;
     if (!this.hotInstance) return;
     const amount = templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * e.target.value;
     const rowCount = this.hotInstance.getSourceData().length;
     const isRemove = rowCount > amount;
     const arg = isRemove ? ['remove_row', amount, rowCount - amount] : ['insert_row', rowCount, amount - rowCount];
+    const [, begin, end] = arg;
+    if (isRemove) {
+      const removeData = this.hotInstance.getSourceData().slice(begin, begin + end);
+      const removeDataHasInput = util.getNotEmptyRowData(removeData).length !== 0;
+      if (removeDataHasInput && !window.confirm(`ページを${page}枚から${e.target.value}枚へ減らすと編集したデータが消えますがよろしいですか？`)) {
+        return;
+      }
+    }
     this.hotInstance.alter(...arg);
+    this.setState({ page: e.target.value });
     this.refleshPdf();
   }
 
