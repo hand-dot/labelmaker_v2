@@ -121,7 +121,7 @@ class TemplateEditor extends Component {
       width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
       rowHeaders: true,
       contextMenu: true,
-      minRows: 50,
+      minRows: 200,
       colWidths: ((((window.innerWidth / 2) + windowSeparatorRatio)
       - hotColumns.reduce((num, column) => {
        num += column.width || 0; // eslint-disable-line 
