@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Handsontable from 'handsontable';
 import Grid from '@material-ui/core/Grid';
 import debounce from 'lodash.debounce';
+import isEqual from 'lodash.isequal';
 import 'handsontable/dist/handsontable.full.min.css';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
@@ -35,6 +36,7 @@ class LabelEditor extends Component {
 
   componentDidMount() {
     const { selectedTemplate } = this.state;
+    const template = getTemplate(selectedTemplate);
     if (!this.hotDom) return;
     this.hotInstance = Handsontable(this.hotDom, {
       height: window.innerHeight
@@ -45,8 +47,8 @@ class LabelEditor extends Component {
       allowInsertRow: false,
       stretchH: 'all',
       colWidths: 140,
-      columns: getTemplate(selectedTemplate).columns,
-      dataSchema: getTemplate(selectedTemplate).dataSchema,
+      columns: template.columns,
+      dataSchema: template.dataSchema,
       afterChange: (changes) => {
         if (!changes) {
           this.refleshPdf();
@@ -66,14 +68,16 @@ class LabelEditor extends Component {
   handleChangeTemplate(e) {
     if (!this.hotInstance) return;
     const datas = util.getNotEmptyRowData(this.hotInstance.getSourceData());
-    if (datas.length !== 0 && !window.confirm('データがすでに入力されていますがテンプレートを変更しますか？')) return;
-    const selectedTemplate = e.target.value;
+    const { selectedTemplate } = this.state;
+    const isSampleData = isEqual(datas, getTemplate(selectedTemplate).sampledata);
+    if (!isSampleData && !window.confirm('データを変更されていますがテンプレートを変更しますか？')) return;
+    const template = getTemplate(e.target.value);
     this.hotInstance.updateSettings({
-      columns: getTemplate(selectedTemplate).columns,
-      dataSchema: getTemplate(selectedTemplate).dataSchema,
+      columns: template.columns,
+      dataSchema: template.dataSchema,
       data: [],
     });
-    this.setState({ selectedTemplate, page: 1 }, () => {
+    this.setState({ selectedTemplate: e.target.value, page: 1 }, () => {
       this.loadSampleData();
     });
   }
@@ -92,11 +96,12 @@ class LabelEditor extends Component {
 
   async refleshPdf() {
     const { selectedTemplate } = this.state;
+    const template = getTemplate(selectedTemplate);
     // FIXME START パフォーマンスが問題になるコード(ローディングを出した方がいい)
     const blob = await pdfUtil.getBlob(
       getData(this.hotInstance.getSourceData(), templates[selectedTemplate]),
-      getTemplate(selectedTemplate).image,
-      getTemplate(selectedTemplate).position,
+      template.image,
+      template.position,
     );
     // FIXME ENDパフォーマンスが問題になるコード(ローディングを出した方がいい)
     this.iframe.src = URL.createObjectURL(blob);
