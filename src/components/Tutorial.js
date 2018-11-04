@@ -11,6 +11,7 @@ import { MOVIE_PROP, TITLE } from '../constants';
 import util from '../utils';
 import logo from '../image/logo.png';
 import hotjar from '../image/hotjar.png';
+import supportBrowser from '../image/support-browser.png';
 
 
 const styles = {
@@ -24,7 +25,7 @@ const Tutorial = (props) => {
   const { handleClose, classes, theme } = props;
   const isMobile = util.isMobile();
   return (
-    <Grid container justify="space-between" style={{ backgroundColor: '#fff' }}>
+    <Grid container justify="space-between">
       {!isMobile && (
       <Grid item xs={12} style={{ display: 'flex' }}>
         <IconButton className={classes.closeBtn} onClick={handleClose}>
@@ -52,44 +53,42 @@ const Tutorial = (props) => {
         </Typography>
         <Divider />
       </Grid>
-      <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
-        <div style={{ padding: theme.spacing.unit }}>
-          <Typography variant="subtitle1" gutterBottom>
-              使い方はとっても簡単
-            <span role="img" aria-label="使い方はとっても簡単">
+      <Grid item xs={12} sm={3} style={{ padding: theme.spacing.unit }}>
+        <Typography variant="subtitle1" gutterBottom>
+          <span role="img" aria-label="使い方はとっても簡単">
               ✌
-            </span>
-          </Typography>
-          <div style={{ marginBottom: theme.spacing.unit }}>
-            <Typography variant="subtitle2">
+          </span>
+              使い方はとっても簡単
+        </Typography>
+        <div style={{ marginBottom: theme.spacing.unit }}>
+          <Typography variant="subtitle2">
                 1.テンプレート・印刷枚数を選択!
-            </Typography>
-            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+          </Typography>
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 ご利用用途に合わせてテンプレートを選択してください。
-              <br />
+            <br />
                 テンプレートはこれからも随時追加予定です！
-            </Typography>
-          </div>
-          <div style={{ marginBottom: theme.spacing.unit }}>
-            <Typography variant="subtitle2">
+          </Typography>
+        </div>
+        <div style={{ marginBottom: theme.spacing.unit }}>
+          <Typography variant="subtitle2">
                 2.データを入力!
-            </Typography>
-            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+          </Typography>
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 エクセルと同等の操作やショートカット利用可能で、
-              <br />
+            <br />
                 エクセルからもしくはエクセルへのコピペにも対応しています。
-            </Typography>
-          </div>
-          <div style={{ marginBottom: theme.spacing.unit }}>
-            <Typography variant="subtitle2">
+          </Typography>
+        </div>
+        <div style={{ marginBottom: theme.spacing.unit }}>
+          <Typography variant="subtitle2">
                 3.PDFをダウンロードして印刷!
-            </Typography>
-            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
-                データを入力すると反映されるPDFをダウンロードし、
-              <br />
-                印刷するときは原寸(100%)で印刷してください!
-            </Typography>
-          </div>
+          </Typography>
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                PDFをダウンロードし、
+            <br />
+                原寸(100%)で印刷してください!
+          </Typography>
         </div>
       </Grid>
       <Hidden xsUp>
@@ -97,108 +96,123 @@ const Tutorial = (props) => {
           <Divider />
         </Grid>
       </Hidden>
-      <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
-        <div style={{ padding: theme.spacing.unit }}>
-          <Typography variant="subtitle1" gutterBottom>
-              安心して利用できます
-            <span role="img" aria-label="ポリシー">
+      <Grid item xs={12} sm={3} style={{ padding: theme.spacing.unit }}>
+        <Typography variant="subtitle1" gutterBottom>
+          <span role="img" aria-label="ポリシー">
               👍
-            </span>
-          </Typography>
-          <div style={{ marginBottom: theme.spacing.unit }}>
-            <Typography variant="subtitle2">
+          </span>
+              安心して利用できます
+        </Typography>
+        <div style={{ marginBottom: theme.spacing.unit }}>
+          <Typography variant="subtitle2">
                 ・セキュリティー
-            </Typography>
-            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+          </Typography>
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 入力情報をサーバーに送信していません。
-              <br />
+            <br />
                 ブラウザだけで動作するので個人情報は外部に漏れません。
-            </Typography>
-          </div>
-          <div style={{ marginBottom: theme.spacing.unit }}>
-            <Typography variant="subtitle2">
+          </Typography>
+        </div>
+        <div style={{ marginBottom: theme.spacing.unit }}>
+          <Typography variant="subtitle2">
                 ・無料
-            </Typography>
-            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+          </Typography>
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 善意で公開しています。
-              <br />
+            <br />
                 基本的な利用で有料にする予定はありません。
-            </Typography>
-          </div>
+          </Typography>
         </div>
       </Grid>
       <Hidden xsDown>
-        <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
-          <div style={{ padding: theme.spacing.unit }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tips
-              <span role="img" aria-label="ポリシー">
+        <Grid item xs={12} sm={3} style={{ padding: theme.spacing.unit }}>
+          <Typography variant="subtitle1" gutterBottom>
+            <span role="img" aria-label="ポリシー">
               👋
-              </span>
-            </Typography>
-            <div style={{ marginBottom: theme.spacing.unit }}>
-              <Typography variant="subtitle2">
+            </span>
+              Tips
+          </Typography>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
                 ・改行
-              </Typography>
-              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 入力した文字がはみ出してしまうときは
-                <br />
+              <br />
                 Excelと同じようにAltを押しながらEnterを押すと改行できます。
-              </Typography>
-            </div>
-            <div style={{ marginBottom: theme.spacing.unit }}>
-              <Typography variant="subtitle2">
+            </Typography>
+          </div>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
                 ・列の並び替え
-              </Typography>
-              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 ドラッグ&amp;ドロップで列を並び替えることができます。
-                <br />
+              <br />
                 CSVなどから一気に貼り付ける際に、
-                <br />
+              <br />
                 列を並び替えてからやって見てください。
-              </Typography>
-            </div>
+            </Typography>
           </div>
         </Grid>
       </Hidden>
       <Hidden xsDown>
-        <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
-          <div style={{ padding: theme.spacing.unit }}>
-            <Typography variant="subtitle1" gutterBottom>
-              お願い
-              <span role="img" aria-label="ポリシー">
+        <Grid item xs={12} sm={3} style={{ padding: theme.spacing.unit }}>
+          <Typography variant="subtitle1" gutterBottom>
+            <span role="img" aria-label="ポリシー">
               🙏
-              </span>
-            </Typography>
-            <div style={{ marginBottom: theme.spacing.unit }}>
-              <Typography variant="subtitle2">
+            </span>
+              お願い
+          </Typography>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
                 ・フィードバックしてください!
-              </Typography>
-              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
                 一人で開発しています。
-                <br />
+              <br />
                 もし不具合,改善点を発見したらフィードバックしてください。
-                <br />
+              <br />
                 また、欲しいテンプレートなども教えてください。
-                <br />
+              <br />
                 右のこいつ
-                <img src={hotjar} alt="hotjar" width={20} height={20} />
+              <img src={hotjar} alt="hotjar" width={20} height={20} />
                 が目印です
-              </Typography>
-            </div>
-            <div style={{ marginBottom: theme.spacing.unit }}>
-              <Typography variant="subtitle2">
-                ・お友達に紹介してください!
-              </Typography>
-              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
-                いろんな人に使ってもらうこと、
-                <br />
-                フィードバックや励ましの言葉がサービス維持の原動力です！
-                <br />
-                是非いろんな人に紹介してください！
-              </Typography>
-            </div>
+            </Typography>
           </div>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                ・お友達に紹介してください!
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                いろんな人に使ってもらうこと、
+              <br />
+                フィードバックや励ましの言葉がサービス維持の原動力です！
+              <br />
+                是非いろんな人に紹介してください！
+            </Typography>
+          </div>
+        </Grid>
+      </Hidden>
+      <Hidden xsDown>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+      </Hidden>
+      <Hidden xsDown>
+        <Grid item xs={12} style={{ padding: theme.spacing.unit, textAlign: 'center' }}>
+          <Typography variant="subtitle1" gutterBottom>
+            <span role="img" aria-label="ポリシー">
+            ✅
+            </span>
+            動作環境
+          </Typography>
+          <img src={supportBrowser} alt="supportBrowser" width="300" />
+          <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+            *Internet ExplorerではリアルタイムPDFプレビューがご利用いただけません。
+            <br />
+            *わたしはGoogle Chromeを使っているのでChromeが一番安定していると思います。
+          </Typography>
         </Grid>
       </Hidden>
       <Grid
