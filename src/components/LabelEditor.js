@@ -90,7 +90,7 @@ class LabelEditor extends Component {
     const datas = util.getNotEmptyRowData(this.hotInstance.getSourceData());
     const { selectedTemplate } = this.state;
     const isSampleData = isEqual(datas, getTemplate(selectedTemplate).sampledata);
-    if (!isSampleData && !window.confirm('データを変更されていますがテンプレートを変更しますか？')) return;
+    if (datas.length !== 0 && !isSampleData && !window.confirm('データを変更されていますがテンプレートを変更しますか？')) return;
     const template = getTemplate(e.target.value);
     this.hotInstance.updateSettings({
       columns: template.columns,
@@ -132,7 +132,6 @@ class LabelEditor extends Component {
 
 
   async refleshPdf() {
-    this.iframe.src = emptyIframe;
     const { selectedTemplate } = this.state;
     const template = getTemplate(selectedTemplate);
     const blob = await pdfUtil.getBlob(
