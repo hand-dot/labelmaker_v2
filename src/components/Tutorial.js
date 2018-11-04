@@ -45,7 +45,7 @@ const Tutorial = (props) => {
       <Grid item xs={12}>
         <Typography variant={isMobile ? 'caption' : 'subtitle1'} style={{ padding: theme.spacing.unit, textAlign: 'center' }}>
           {TITLE}
-          は無料で安心して使える宛名ラベル作成サイトです。
+          は無料ですぐに使える宛名ラベル作成サイトです。
           <br />
           会員登録、データのアップロード必要なし!
           <br />
@@ -118,9 +118,9 @@ const Tutorial = (props) => {
                 ・無料
           </Typography>
           <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
-                善意で公開しています。
+                開発者がプライベートで使っているものを公開しています。
             <br />
-                基本的な利用で有料にする予定はありません。
+                なので基本的な利用で有料にする予定はありません。
           </Typography>
         </div>
       </Grid>
