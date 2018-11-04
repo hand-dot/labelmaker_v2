@@ -14,6 +14,10 @@ import hotjar from '../image/hotjar.png';
 
 
 const styles = {
+  root: {
+    maxWidth: 960,
+    margin: '0 auto',
+  },
   closeBtn: {
     marginLeft: 'auto',
     marginRight: 20,
@@ -24,7 +28,7 @@ const Tutorial = (props) => {
   const { handleClose, classes, theme } = props;
   const isMobile = util.isMobile();
   return (
-    <Grid container justify="space-between" style={{ backgroundColor: '#fff' }}>
+    <Grid className={classes.root} container justify="space-between" style={{ backgroundColor: '#fff' }}>
       {!isMobile && (
       <Grid item xs={12} style={{ display: 'flex' }}>
         <IconButton className={classes.closeBtn} onClick={handleClose}>
@@ -34,7 +38,7 @@ const Tutorial = (props) => {
       )}
       <Grid item xs={12}>
         <iframe
-          style={{ display: 'block', margin: '0 auto', border: '1px solid #eee' }}
+          style={{ display: 'block', margin: '0 auto' }}
           {...MOVIE_PROP}
           title="AthenaLabelの使い方"
           width={isMobile ? window.innerWidth : '960'}
@@ -158,16 +162,6 @@ const Tutorial = (props) => {
                 列を並び替えてからやって見てください。
               </Typography>
             </div>
-            <div style={{ marginBottom: theme.spacing.unit }}>
-              <Typography variant="subtitle2">
-                ・全角数字利用不可
-              </Typography>
-              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
-                現在、全角数字がフォントの関係で利用不可です。
-                <br />
-                自動的に半角文字に変換しますが、文字化けすると「・」になって表示されます。
-              </Typography>
-            </div>
           </div>
         </Grid>
       </Hidden>
@@ -206,15 +200,6 @@ const Tutorial = (props) => {
                 <br />
                 是非いろんな人に紹介してください！
               </Typography>
-              <div style={{ marginLeft: theme.spacing.unit, marginTop: theme.spacing.unit }}>
-                <a
-                  href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                  className="twitter-share-button"
-                  data-show-count="false"
-                >
-                Tweet
-                </a>
-              </div>
             </div>
           </div>
         </Grid>
@@ -223,14 +208,17 @@ const Tutorial = (props) => {
         item
         xs={12}
         style={{
-          paddingBottom: '1rem', paddingTop: '1rem', textAlign: 'center', backgroundColor: '#fff',
+          paddingBottom: '1rem',
+          paddingTop: '1rem',
+          textAlign: 'center',
+          background: '#272d33',
+          color: '#fff',
         }}
       >
-        <Divider />
         <Typography gutterBottom variant="caption" color="inherit" style={{ display: 'flex', justifyContent: 'center', paddingTop: '1rem' }}>
-          本サイトはスマートフォンではご利用いただけません。
+          本サービスはスマートフォンでは利用できません。
           <br />
-          お手数ですがPCで再度アクセスしてください。
+          利用するためにはPCで再度アクセスしてください。
         </Typography>
         <Typography gutterBottom variant="caption" color="inherit" style={{ display: 'flex', justifyContent: 'center' }}>
             Copyright (c)

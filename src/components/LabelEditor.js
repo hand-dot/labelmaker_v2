@@ -158,7 +158,11 @@ class LabelEditor extends Component {
         <Grid item>
           <div className={classes.flexItem} style={{ padding: 5, justifyContent: 'space-around' }}>
             <Button variant="outlined" mini onClick={this.handleOpenTutorial.bind(this)}>使い方を見る</Button>
-            <Modal className={classes.modal} open={isOpenTutorial} onClose={this.handleCloseTutorial.bind(this)}>
+            <Modal
+              className={classes.modal}
+              open={isOpenTutorial}
+              onClose={this.handleCloseTutorial.bind(this)}
+            >
               <Tutorial handleClose={this.handleCloseTutorial.bind(this)} />
             </Modal>
             <div className={classes.flexItem}>/</div>
