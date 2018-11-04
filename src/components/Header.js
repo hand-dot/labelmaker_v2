@@ -23,11 +23,11 @@ class Header extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
     return (
       <AppBar position="fixed" style={{ background: '#24292e' }}>
         <Toolbar>
-          <img src={logo} width={30} height={30} style={{ marginRight: 5 }} alt="logo" />
+          <img src={logo} width={30} height={30} style={{ marginRight: theme.spacing.unit }} alt="logo" />
           <Typography variant="title" color="inherit" className={classes.grow}>
             {TITLE}
           </Typography>

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Handsontable from 'handsontable';
 import Grid from '@material-ui/core/Grid';
 import debounce from 'lodash.debounce';
@@ -8,6 +10,8 @@ import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
@@ -18,10 +22,33 @@ import templateUtil from '../utils/template';
 
 const PDF_REFLESH_MS = 100;
 const windowSeparatorRatio = window.innerWidth * 0.1;
-const emptyIframe = new Blob(['<div>Loading...</div>'], { type: 'text/html' });
+const emptyIframe = URL.createObjectURL(new Blob(['<div>Loading...</div>'], { type: 'text/html' }));
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
+
+const movieProp = {
+  title: 'Getting Started Taskontable',
+  width: '960',
+  height: '540',
+  src: 'https://www.youtube.com/embed/QwCtcFsx15g?rel=0&showinfo=0&modestbranding=0',
+  frameBorder: '0',
+  allow: 'autoplay; encrypted-media',
+  allowFullScreen: true,
+};
+
+const styles = {
+  flexItem: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  modal: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+};
 
 class LabelEditor extends Component {
   constructor(props) {
@@ -31,6 +58,7 @@ class LabelEditor extends Component {
     this.state = {
       page: 1,
       selectedTemplate: '宛名8面',
+      isOpenTutorial: false,
     };
   }
 
@@ -61,7 +89,7 @@ class LabelEditor extends Component {
         if (needReflech) this.refleshPdf();
       },
     });
-    this.iframe.src = URL.createObjectURL(emptyIframe);
+    this.iframe.src = emptyIframe;
     this.loadSampleData();
   }
 
@@ -102,16 +130,24 @@ class LabelEditor extends Component {
     this.refleshPdf();
   }
 
+  handleOpenTutorial() {
+    this.setState({ isOpenTutorial: true });
+  }
+
+  handleCloseTutorial() {
+    this.setState({ isOpenTutorial: false });
+  }
+
+
   async refleshPdf() {
+    this.iframe.src = emptyIframe;
     const { selectedTemplate } = this.state;
     const template = getTemplate(selectedTemplate);
-    // FIXME START パフォーマンスが問題になるコード(ローディングを出した方がいい)
     const blob = await pdfUtil.getBlob(
       getData(this.hotInstance.getSourceData(), templates[selectedTemplate]),
       template.image,
       template.position,
     );
-    // FIXME ENDパフォーマンスが問題になるコード(ローディングを出した方がいい)
     this.iframe.src = URL.createObjectURL(blob);
   }
 
@@ -123,43 +159,43 @@ class LabelEditor extends Component {
   }
 
   render() {
-    const { selectedTemplate, page } = this.state;
+    const { classes } = this.props;
+    const { isOpenTutorial, selectedTemplate, page } = this.state;
     return (
       <Grid container justify="space-between">
-        <Grid item xs={6}>
-          <div style={{ padding: 5, display: 'flex', alignContent: 'center' }}>
-            <FormControl margin="none">
-              <InputLabel htmlFor="select-template-helper">テンプレート</InputLabel>
-              <NativeSelect
-                value={selectedTemplate}
-                onChange={this.handleChangeTemplate.bind(this)}
-                input={<Input name="template" id="select-template-helper" />}
-              >
-                {Object.keys(templates).map(_ => (<option key={_} value={_}>{_}</option>))}
-              </NativeSelect>
-            </FormControl>
-            <Typography style={{ display: 'flex', alignItems: 'center', margin: '0 20px' }}>x</Typography>
-            <FormControl margin="none">
-              <InputLabel htmlFor="select-page-helper">枚数</InputLabel>
-              <NativeSelect
-                value={page}
-                onChange={this.handleChangePage.bind(this)}
-                input={<Input name="page" id="select-page-helper" />}
-              >
-                {[...Array(10).keys()].map(i => i + 1)
-                  .map(_ => (<option key={_} value={_}>{_}</option>))}
-              </NativeSelect>
-            </FormControl>
-            <Typography style={{ display: 'flex', alignItems: 'center', marginLeft: 20 }}>
-              =
-              {' '}
-              {templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * page}
-              セット
-            </Typography>
+        <Grid item>
+          <div className={classes.flexItem} style={{ padding: 5, justifyContent: 'space-around' }}>
+            <Button variant="outlined" mini onClick={this.handleOpenTutorial.bind(this)}>使い方を見る</Button>
+            <Modal className={classes.modal} open={isOpenTutorial} onClose={this.handleCloseTutorial.bind(this)}>
+              <iframe title="AthenaLabelの使い方" {...movieProp} />
+            </Modal>
+            <div className={classes.flexItem}>/</div>
+            <div className={classes.flexItem}>
+              <FormControl margin="none">
+                <InputLabel htmlFor="select-template-helper">テンプレート</InputLabel>
+                <NativeSelect value={selectedTemplate} onChange={this.handleChangeTemplate.bind(this)} input={<Input name="template" id="select-template-helper" />}>
+                  {Object.keys(templates).map(_ => (<option key={_} value={_}>{_}</option>))}
+                </NativeSelect>
+              </FormControl>
+              <Typography variant="subheading" className={classes.flexItem} style={{ margin: '0 20px' }}>x</Typography>
+              <FormControl margin="none">
+                <InputLabel htmlFor="select-page-helper">枚数</InputLabel>
+                <NativeSelect value={page} onChange={this.handleChangePage.bind(this)} input={<Input name="page" id="select-page-helper" />}>
+                  {[...Array(10).keys()].map(i => i + 1)
+                    .map(_ => (<option key={_} value={_}>{_}</option>))}
+                </NativeSelect>
+              </FormControl>
+              <Typography variant="subheading" className={classes.flexItem} style={{ marginLeft: 20 }}>
+                =
+                {' '}
+                {templateUtil.getLabelLengthInPage(templates[selectedTemplate]) * page}
+                セット
+              </Typography>
+            </div>
           </div>
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item>
           <iframe
             style={{ position: 'fixed', right: 0, border: '1px solid #ccc' }}
             ref={(node) => { this.iframe = node; }}
@@ -173,4 +209,9 @@ class LabelEditor extends Component {
   }
 }
 
-export default LabelEditor;
+LabelEditor.propTypes = {
+  classes: PropTypes.object.isRequired, // eslint-disable-line
+  theme: PropTypes.object.isRequired, // eslint-disable-line
+};
+
+export default withStyles(styles, { withTheme: true })(LabelEditor);
