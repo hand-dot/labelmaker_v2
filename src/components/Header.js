@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,6 +6,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Notifications from '@material-ui/icons/Notifications';
 import Typography from '@material-ui/core/Typography';
+import { TITLE, ACCOUNT_ID } from '../constants';
+import logo from '../image/logo.png';
 
 const styles = {
   grow: {
@@ -13,22 +15,38 @@ const styles = {
   },
 };
 
+class Header extends Component {
+  componentDidMount() {
+    if (window.twttr) {
+      window.twttr.widgets.load(this.twFollowButton);
+    }
+  }
 
-function Header(props) {
-  const { classes } = props;
-  return (
-    <AppBar position="fixed" style={{ background: '#24292e' }}>
-      <Toolbar>
-        <Typography color="inherit" className={classes.grow}>
-        レターパックラベルを一括作成！
-        </Typography>
-        <IconButton color="inherit">
-          <Notifications fontSize="small" />
-          <span style={{ position: 'absolute', left: 15, top: 15 }} id="changelog" />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
-  );
+  render() {
+    const { classes } = this.props;
+    return (
+      <AppBar position="fixed" style={{ background: '#24292e' }}>
+        <Toolbar>
+          <img src={logo} width={30} height={30} style={{ marginRight: 5 }} alt="logo" />
+          <Typography variant="title" color="inherit" className={classes.grow}>
+            {TITLE}
+          </Typography>
+          <a
+            ref={(twFollowButton) => { this.twFollowButton = twFollowButton; }}
+            href={`https://twitter.com/${ACCOUNT_ID}?ref_src=twsrc%5Etfw`}
+            className="twitter-follow-button"
+            data-show-count="false"
+          >
+            {`Follow @${ACCOUNT_ID}`}
+          </a>
+          <IconButton color="inherit">
+            <Notifications fontSize="small" />
+            <span style={{ position: 'absolute', left: 15, top: 15 }} id="changelog" />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    );
+  }
 }
 
 Header.propTypes = {
