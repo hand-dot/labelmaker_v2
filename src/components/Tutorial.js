@@ -14,10 +14,6 @@ import hotjar from '../image/hotjar.png';
 
 
 const styles = {
-  root: {
-    maxWidth: 960,
-    margin: '0 auto',
-  },
   closeBtn: {
     marginLeft: 'auto',
     marginRight: 20,
@@ -28,7 +24,7 @@ const Tutorial = (props) => {
   const { handleClose, classes, theme } = props;
   const isMobile = util.isMobile();
   return (
-    <Grid className={classes.root} container justify="space-between" style={{ backgroundColor: '#fff' }}>
+    <Grid container justify="space-between" style={{ backgroundColor: '#fff' }}>
       {!isMobile && (
       <Grid item xs={12} style={{ display: 'flex' }}>
         <IconButton className={classes.closeBtn} onClick={handleClose}>

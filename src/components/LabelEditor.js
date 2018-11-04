@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import '../styles/handsontable-custom.css';
 import '../styles/animation.css';
@@ -32,13 +32,6 @@ const styles = {
   flexItem: {
     display: 'flex',
     alignItems: 'center',
-  },
-  modal: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'scroll',
   },
 };
 
@@ -157,13 +150,13 @@ class LabelEditor extends Component {
         <Grid item>
           <div className={classes.flexItem} style={{ padding: 5, justifyContent: 'space-around' }}>
             <Button variant="outlined" mini onClick={this.handleOpenTutorial.bind(this)}>使い方を見る</Button>
-            <Modal
-              className={classes.modal}
+            <Dialog
+              fullScreen
               open={isOpenTutorial}
               onClose={this.handleCloseTutorial.bind(this)}
             >
               <Tutorial handleClose={this.handleCloseTutorial.bind(this)} />
-            </Modal>
+            </Dialog>
             <div className={classes.flexItem}>/</div>
             <div className={classes.flexItem}>
               <FormControl margin="none">

@@ -37,7 +37,7 @@ class Header extends Component {
               {TITLE}
             </Typography>
             <Typography style={{ display: isMobile ? 'none' : 'flex' }} variant="caption" color="inherit">
-              無料でお使いいただける宛名ラベル作成サイト
+              無料ですぐに使える宛名ラベル作成サイト
             </Typography>
           </div>
           <a
