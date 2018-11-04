@@ -2,10 +2,14 @@ import UAParser from 'ua-parser-js';
 
 const parser = new UAParser();
 const deviceType = parser.getDevice().type;
+const browser = parser.getBrowser().name;
 
 export default {
   isMobile() {
     return deviceType === 'mobile';
+  },
+  isIe() {
+    return browser === 'IE';
   },
   zenkaku2hankaku(val) {
     if (typeof val !== 'string') return val;

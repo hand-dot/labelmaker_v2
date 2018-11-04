@@ -24,6 +24,7 @@ import Tutorial from './Tutorial';
 const PDF_REFLESH_MS = 100;
 const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = URL.createObjectURL(new Blob(['<div>Loading...</div>'], { type: 'text/html' }));
+const isIe = util.isIe();
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
@@ -39,6 +40,7 @@ const styles = {
   flexItem: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
@@ -195,6 +197,28 @@ class LabelEditor extends Component {
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>
         <Grid item>
+          {isIe && (
+          <div
+            ref={(node) => { this.iframe = node; }}
+            className={classes.flexItem}
+            style={{
+              position: 'fixed',
+              right: 0,
+              border: '1px solid #ccc',
+              height: window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0),
+              width: (window.innerWidth / 2) - windowSeparatorRatio,
+            }}
+          >
+            <Typography variant="caption" style={{ textAlign: 'center' }}>
+              Internet Explorerでは
+              <br />
+              リアルタイムPDFプレビューがご利用いただけません。
+              <br />
+              「使い方を見る」から動作環境を確認してください。
+            </Typography>
+          </div>
+          )}
+          {!isIe && (
           <iframe
             style={{ position: 'fixed', right: 0, border: '1px solid #ccc' }}
             ref={(node) => { this.iframe = node; }}
@@ -202,6 +226,7 @@ class LabelEditor extends Component {
             width={`${(window.innerWidth / 2) - windowSeparatorRatio}px`}
             title="PDF"
           />
+          )}
         </Grid>
       </Grid>
     );
