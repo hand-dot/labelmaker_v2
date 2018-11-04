@@ -1,4 +1,12 @@
+import UAParser from 'ua-parser-js';
+
+const parser = new UAParser();
+const deviceType = parser.getDevice().type;
+
 export default {
+  isMobile() {
+    return deviceType === 'mobile';
+  },
   zenkaku2hankaku(val) {
     if (typeof val !== 'string') return val;
     const regex = /[Ａ-Ｚａ-ｚ０-９！＂＃＄％＆＇（）＊＋，－．／：；＜＝＞？＠［＼］＾＿｀｛｜｝]/g;

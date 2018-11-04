@@ -19,23 +19,14 @@ import templates from '../templates';
 import util from '../utils';
 import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
+import Tutorial from './Tutorial';
 
 const PDF_REFLESH_MS = 100;
-const windowSeparatorRatio = window.innerWidth * 0.1;
+const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = URL.createObjectURL(new Blob(['<div>Loading...</div>'], { type: 'text/html' }));
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
-
-const movieProp = {
-  title: 'Getting Started Taskontable',
-  width: '960',
-  height: '540',
-  src: 'https://www.youtube.com/embed/QwCtcFsx15g?rel=0&showinfo=0&modestbranding=0',
-  frameBorder: '0',
-  allow: 'autoplay; encrypted-media',
-  allowFullScreen: true,
-};
 
 const styles = {
   flexItem: {
@@ -47,6 +38,7 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'scroll',
   },
 };
 
@@ -167,7 +159,7 @@ class LabelEditor extends Component {
           <div className={classes.flexItem} style={{ padding: 5, justifyContent: 'space-around' }}>
             <Button variant="outlined" mini onClick={this.handleOpenTutorial.bind(this)}>使い方を見る</Button>
             <Modal className={classes.modal} open={isOpenTutorial} onClose={this.handleCloseTutorial.bind(this)}>
-              <iframe title="AthenaLabelの使い方" {...movieProp} />
+              <Tutorial handleClose={this.handleCloseTutorial.bind(this)} />
             </Modal>
             <div className={classes.flexItem}>/</div>
             <div className={classes.flexItem}>

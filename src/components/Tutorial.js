@@ -1,0 +1,253 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import Hidden from '@material-ui/core/Hidden';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Close from '@material-ui/icons/Close';
+import { MOVIE_PROP, TITLE } from '../constants';
+import util from '../utils';
+import logo from '../image/logo.png';
+import hotjar from '../image/hotjar.png';
+
+
+const styles = {
+  closeBtn: {
+    marginLeft: 'auto',
+    marginRight: 20,
+  },
+};
+
+const Tutorial = (props) => {
+  const { handleClose, classes, theme } = props;
+  const isMobile = util.isMobile();
+  return (
+    <Grid container justify="space-between" style={{ backgroundColor: '#fff' }}>
+      {!isMobile && (
+      <Grid item xs={12} style={{ display: 'flex' }}>
+        <IconButton className={classes.closeBtn} onClick={handleClose}>
+          <Close />
+        </IconButton>
+      </Grid>
+      )}
+      <Grid item xs={12}>
+        <iframe
+          style={{ display: 'block', margin: '0 auto', border: '1px solid #eee' }}
+          {...MOVIE_PROP}
+          title="AthenaLabelの使い方"
+          width={isMobile ? window.innerWidth : '960'}
+          height={isMobile ? window.innerWidth * 0.56 : '540'}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant={isMobile ? 'caption' : 'subtitle1'} style={{ padding: theme.spacing.unit, textAlign: 'center' }}>
+          {TITLE}
+          は無料で安心して使える宛名ラベル作成サイトです。
+          <br />
+          会員登録、データのアップロード必要なし!
+          <br />
+          Excelライクにブラウザでそのまま宛名ラベルを作成できます。
+        </Typography>
+        <Divider />
+      </Grid>
+      <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
+        <div style={{ padding: theme.spacing.unit }}>
+          <Typography variant="subtitle1" gutterBottom>
+              使い方はとっても簡単
+            <span role="img" aria-label="使い方はとっても簡単">
+              ✌
+            </span>
+          </Typography>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                1.テンプレート・印刷枚数を選択!
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                ご利用用途に合わせてテンプレートを選択してください。
+              <br />
+                テンプレートはこれからも随時追加予定です！
+            </Typography>
+          </div>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                2.データを入力!
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                エクセルと同等の操作やショートカット利用可能で、
+              <br />
+                エクセルからもしくはエクセルへのコピペにも対応しています。
+            </Typography>
+          </div>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                3.PDFをダウンロードして印刷!
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                データを入力すると反映されるPDFをダウンロードし、
+              <br />
+                印刷するときは原寸(100%)で印刷してください!
+            </Typography>
+          </div>
+        </div>
+      </Grid>
+      <Hidden xsUp>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+      </Hidden>
+      <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
+        <div style={{ padding: theme.spacing.unit }}>
+          <Typography variant="subtitle1" gutterBottom>
+              安心して利用できます
+            <span role="img" aria-label="ポリシー">
+              👍
+            </span>
+          </Typography>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                ・セキュリティー
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                入力情報をサーバーに送信していません。
+              <br />
+                ブラウザだけで動作するので個人情報は外部に漏れません。
+            </Typography>
+          </div>
+          <div style={{ marginBottom: theme.spacing.unit }}>
+            <Typography variant="subtitle2">
+                ・無料
+            </Typography>
+            <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                善意で公開しています。
+              <br />
+                基本的な利用で有料にする予定はありません。
+            </Typography>
+          </div>
+        </div>
+      </Grid>
+      <Hidden xsDown>
+        <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
+          <div style={{ padding: theme.spacing.unit }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Tips
+              <span role="img" aria-label="ポリシー">
+              👋
+              </span>
+            </Typography>
+            <div style={{ marginBottom: theme.spacing.unit }}>
+              <Typography variant="subtitle2">
+                ・改行
+              </Typography>
+              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                入力した文字がはみ出してしまうときは
+                <br />
+                Excelと同じようにAltを押しながらEnterを押すと改行できます。
+              </Typography>
+            </div>
+            <div style={{ marginBottom: theme.spacing.unit }}>
+              <Typography variant="subtitle2">
+                ・列の並び替え
+              </Typography>
+              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                ドラッグ&amp;ドロップで列を並び替えることができます。
+                <br />
+                CSVなどから一気に貼り付ける際に、
+                <br />
+                列を並び替えてからやって見てください。
+              </Typography>
+            </div>
+            <div style={{ marginBottom: theme.spacing.unit }}>
+              <Typography variant="subtitle2">
+                ・全角数字利用不可
+              </Typography>
+              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                現在、全角数字がフォントの関係で利用不可です。
+                <br />
+                自動的に半角文字に変換しますが、文字化けすると「・」になって表示されます。
+              </Typography>
+            </div>
+          </div>
+        </Grid>
+      </Hidden>
+      <Hidden xsDown>
+        <Grid item xs={12} sm={3} style={{ backgroundColor: '#fff' }}>
+          <div style={{ padding: theme.spacing.unit }}>
+            <Typography variant="subtitle1" gutterBottom>
+              お願い
+              <span role="img" aria-label="ポリシー">
+              🙏
+              </span>
+            </Typography>
+            <div style={{ marginBottom: theme.spacing.unit }}>
+              <Typography variant="subtitle2">
+                ・フィードバックしてください!
+              </Typography>
+              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                一人で開発しています。
+                <br />
+                もし不具合,改善点を発見したらフィードバックしてください。
+                <br />
+                また、欲しいテンプレートなども教えてください。
+                <br />
+                右のこいつが目印です。
+                <img src={hotjar} alt="hotjar" width={20} height={20} />
+              </Typography>
+            </div>
+            <div style={{ marginBottom: theme.spacing.unit }}>
+              <Typography variant="subtitle2">
+                ・お友達に紹介してください!
+              </Typography>
+              <Typography style={{ paddingLeft: theme.spacing.unit }} variant="caption">
+                いろんな人に使ってもらうこと、
+                <br />
+                フィードバックや励ましの言葉がサービス維持の原動力です！
+                <br />
+                是非いろんな人に紹介してください！
+              </Typography>
+              <div style={{ marginLeft: theme.spacing.unit, marginTop: theme.spacing.unit }}>
+                <a
+                  href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                  className="twitter-share-button"
+                  data-show-count="false"
+                >
+                Tweet
+                </a>
+              </div>
+            </div>
+          </div>
+        </Grid>
+      </Hidden>
+      <Grid
+        item
+        xs={12}
+        style={{
+          paddingBottom: '1rem', paddingTop: '1rem', textAlign: 'center', backgroundColor: '#fff',
+        }}
+      >
+        <Divider />
+        <Typography gutterBottom variant="caption" color="inherit" style={{ display: 'flex', justifyContent: 'center', paddingTop: '1rem' }}>
+          本サイトはスマートフォンではご利用いただけません。
+          <br />
+          お手数ですがPCで再度アクセスしてください。
+        </Typography>
+        <Typography gutterBottom variant="caption" color="inherit" style={{ display: 'flex', justifyContent: 'center' }}>
+            Copyright (c)
+          {' '}
+          {TITLE}
+          {' '}
+            All Rights Reserved.
+        </Typography>
+        <img src={logo} width={30} height={30} style={{ animation: 'good 1s linear 0s infinite' }} alt="logo" />
+      </Grid>
+    </Grid>
+  );
+};
+
+Tutorial.propTypes = {
+  classes: PropTypes.object.isRequired, // eslint-disable-line
+  theme: PropTypes.object.isRequired, // eslint-disable-line
+};
+
+export default withStyles(styles, { withTheme: true })(Tutorial);

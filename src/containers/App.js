@@ -4,6 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Header from '../components/Header';
 import TemplateEditor from '../components/TemplateEditor';
 import LabelEditor from '../components/LabelEditor';
+import Tutorial from '../components/Tutorial';
+import util from '../utils';
 
 const styles = {};
 class App extends Component {
@@ -11,7 +13,7 @@ class App extends Component {
     super(props);
     this.hotInstance = null;
     this.state = {
-      isTemplateEditor: false, // テンプレート開発者用。公開していません。
+      isTemplateEditor: false, // テンプレート開発者用。現段階では非公開
     };
   }
 
@@ -22,8 +24,16 @@ class App extends Component {
       <>
         <Header />
         <div style={{ height: theme.mixins.toolbar.minHeight }} />
-        {isTemplateEditor && <TemplateEditor />}
-        {!isTemplateEditor && <LabelEditor />}
+        {(() => {
+          const isMobile = util.isMobile();
+          if (isTemplateEditor) {
+            return <TemplateEditor />;
+          } if (isMobile) {
+            return <Tutorial />;
+          }
+          return <LabelEditor />;
+        })()}
+
       </>
     );
   }

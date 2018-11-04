@@ -6,6 +6,7 @@ const rgb = {
   PURPLE: '153, 102, 255',
   GREY: '201, 203, 207',
 };
+const movieId = 'QwCtcFsx15g';
 export const APP_VERSION = '0.0.0';
 export const TITLE = 'AthenaLabel';
 export const ACCOUNT_ID = 'athenalabel';
@@ -27,4 +28,13 @@ export const brandColor = {
     PURPLE: `rgba(${rgb.PURPLE},0.2)`,
     GREY: `rgba(${rgb.GREY},0.2)`,
   },
+};
+export const MOVIE_PROP = {
+  title: 'Getting Started Taskontable',
+  width: '960',
+  height: '540',
+  src: `https://www.youtube.com/embed/${movieId}?rel=0&showinfo=0&modestbranding=0`,
+  frameBorder: '0',
+  allow: 'autoplay; encrypted-media',
+  allowFullScreen: true,
 };

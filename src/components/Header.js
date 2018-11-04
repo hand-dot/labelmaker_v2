@@ -7,10 +7,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Notifications from '@material-ui/icons/Notifications';
 import Typography from '@material-ui/core/Typography';
 import { TITLE, ACCOUNT_ID } from '../constants';
+import util from '../utils';
 import logo from '../image/logo.png';
 
 const styles = {
   grow: {
+    display: 'flex',
+    alignItems: 'center',
     flexGrow: 1,
   },
 };
@@ -24,13 +27,19 @@ class Header extends Component {
 
   render() {
     const { classes, theme } = this.props;
+    const isMobile = util.isMobile();
     return (
       <AppBar position="fixed" style={{ background: '#24292e' }}>
         <Toolbar>
-          <img src={logo} width={30} height={30} style={{ marginRight: theme.spacing.unit }} alt="logo" />
-          <Typography variant="title" color="inherit" className={classes.grow}>
-            {TITLE}
-          </Typography>
+          <div className={classes.grow}>
+            <img src={logo} width={30} height={30} style={{ marginRight: theme.spacing.unit }} alt="logo" />
+            <Typography variant={isMobile ? 'subtitle1' : 'headline'} color="inherit" style={{ marginRight: theme.spacing.unit }}>
+              {TITLE}
+            </Typography>
+            <Typography style={{ display: isMobile ? 'none' : 'flex' }} variant="caption" color="inherit">
+              無料でお使いいただける宛名ラベル作成サイト
+            </Typography>
+          </div>
           <a
             ref={(twFollowButton) => { this.twFollowButton = twFollowButton; }}
             href={`https://twitter.com/${ACCOUNT_ID}?ref_src=twsrc%5Etfw`}
