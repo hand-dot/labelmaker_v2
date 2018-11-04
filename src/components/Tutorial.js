@@ -181,8 +181,9 @@ const Tutorial = (props) => {
                 <br />
                 また、欲しいテンプレートなども教えてください。
                 <br />
-                右のこいつが目印です。
+                右のこいつ
                 <img src={hotjar} alt="hotjar" width={20} height={20} />
+                が目印です
               </Typography>
             </div>
             <div style={{ marginBottom: theme.spacing.unit }}>

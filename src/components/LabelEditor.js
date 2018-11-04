@@ -27,7 +27,14 @@ const emptyIframe = URL.createObjectURL(new Blob(['<div>Loading...</div>'], { ty
 
 const getTemplate = selectedTemplate => templateUtil.fmtTemplate(templates[selectedTemplate]);
 const getData = (datas, template) => templateUtil.fmtData(datas, template);
-
+const downloadPdf = (blob) => {
+  if (!blob) return;
+  if (window.navigator.msSaveBlob) {
+    window.navigator.msSaveOrOpenBlob(blob, `${Date.now()}.pdf`);
+  } else {
+    window.open(window.URL.createObjectURL(blob));
+  }
+};
 const styles = {
   flexItem: {
     display: 'flex',
@@ -40,6 +47,7 @@ class LabelEditor extends Component {
     super(props);
     this.refleshPdf = debounce(this.refleshPdf, PDF_REFLESH_MS);
     this.hotInstance = null;
+    this.pdfBlob = null;
     this.state = {
       page: 1,
       selectedTemplate: '宛名8面',
@@ -125,14 +133,15 @@ class LabelEditor extends Component {
 
 
   async refleshPdf() {
+    this.pdfBlob = null;
     const { selectedTemplate } = this.state;
     const template = getTemplate(selectedTemplate);
-    const blob = await pdfUtil.getBlob(
+    this.pdfBlob = await pdfUtil.getBlob(
       getData(this.hotInstance.getSourceData(), templates[selectedTemplate]),
       template.image,
       template.position,
     );
-    this.iframe.src = URL.createObjectURL(blob);
+    this.iframe.src = URL.createObjectURL(this.pdfBlob);
   }
 
   loadSampleData() {
@@ -180,6 +189,8 @@ class LabelEditor extends Component {
                 セット
               </Typography>
             </div>
+            <div className={classes.flexItem}>/</div>
+            <Button variant="outlined" mini onClick={() => { downloadPdf(this.pdfBlob); }}>ダウンロード</Button>
           </div>
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>
