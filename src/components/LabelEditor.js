@@ -192,7 +192,7 @@ class LabelEditor extends Component {
               </Typography>
             </div>
             <div className={classes.flexItem}>/</div>
-            <Button variant="outlined" mini onClick={() => { downloadPdf(this.pdfBlob); }}>ダウンロード</Button>
+            <Button variant="outlined" mini onClick={() => { downloadPdf(this.pdfBlob); }}>作成</Button>
           </div>
           <div ref={(node) => { this.hotDom = node; }} />
         </Grid>
