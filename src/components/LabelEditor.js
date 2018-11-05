@@ -21,7 +21,8 @@ import pdfUtil from '../utils/pdf';
 import templateUtil from '../utils/template';
 import Tutorial from './Tutorial';
 
-const PDF_REFLESH_MS = 100;
+const PDF_REFLESH_DEBOUNCE = 100;
+const WINDOW_RESIZE_DEBOUNCE = 500;
 const windowSeparatorRatio = window.innerWidth * 0.2;
 const emptyIframe = URL.createObjectURL(new Blob(['<div>Loading...</div>'], { type: 'text/html' }));
 const isIe = util.isIe();
@@ -47,7 +48,7 @@ const styles = {
 class LabelEditor extends Component {
   constructor(props) {
     super(props);
-    this.refleshPdf = debounce(this.refleshPdf, PDF_REFLESH_MS);
+    this.refleshPdf = debounce(this.refleshPdf, PDF_REFLESH_DEBOUNCE);
     this.hotInstance = null;
     this.pdfBlob = null;
     this.state = {
@@ -58,8 +59,7 @@ class LabelEditor extends Component {
   }
 
   componentDidMount() {
-    const { selectedTemplate } = this.state;
-    const template = getTemplate(selectedTemplate);
+    const template = getTemplate(this.state.selectedTemplate); // eslint-disable-line
     if (!this.hotDom) return;
     this.hotInstance = Handsontable(this.hotDom, {
       height: window.innerHeight
@@ -86,6 +86,35 @@ class LabelEditor extends Component {
     });
     this.iframe.src = emptyIframe;
     this.loadSampleData();
+
+    // ページを離れる時にデータが変更されていればページを離れないようにする処理
+    window.onbeforeunload = (e) => {
+      if (!this.hotInstance) return null;
+      const datas = util.getNotEmptyRowData(this.hotInstance.getSourceData());
+      const isSampleData = isEqual(datas, getTemplate(this.state.selectedTemplate).sampledata); // eslint-disable-line
+      if (datas.length !== 0 && !isSampleData) {
+        const dialogText = 'ページを離れてもよろしいですか？';
+        e.returnValue = dialogText;
+        return dialogText;
+      }
+      return null;
+    };
+    // リサイズされた時にhotの横幅を調整する
+    window.onresize = debounce(() => {
+      if (!this.iframe || !this.hotInstance) return;
+      this.hotInstance.updateSettings({
+        height: window.innerHeight
+        - (this.hotDom ? this.hotDom.getBoundingClientRect().top : 0),
+        width: (window.innerWidth / 2) + windowSeparatorRatio - 1,
+      });
+      this.iframe.style.height = `${window.innerHeight - (this.iframe ? this.iframe.getBoundingClientRect().top + 5 : 0)}px`;
+      this.iframe.style.width = `${(window.innerWidth / 2) - windowSeparatorRatio}px`;
+    }, WINDOW_RESIZE_DEBOUNCE);
+  }
+
+  componentWillUnmount() {
+    window.onbeforeunload = '';
+    window.onresize = '';
   }
 
   handleChangeTemplate(e) {
