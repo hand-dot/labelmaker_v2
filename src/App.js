@@ -160,7 +160,7 @@ class App extends Component {
             }}
           >
             <Typography style={{
-              position: 'relative', paddingLeft: 25, marginLeft: 5, fontWeight: 'bold', display: 'inline',
+              position: 'relative', paddingLeft: 25, marginLeft: 5, fontWeight: 'bold', display: 'inline-block',
             }}
             >
               <FiberNew style={{
