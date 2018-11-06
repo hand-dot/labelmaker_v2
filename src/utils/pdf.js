@@ -1,5 +1,3 @@
-import utils from './index';
-
 window.onload = () => {
   window.pdfMake.fonts = {
     GenShin: {
