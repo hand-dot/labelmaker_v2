@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Notifications from '@material-ui/icons/Notifications';
+import FiberNew from '@material-ui/icons/FiberNew';
 import Modal from '@material-ui/core/Modal';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
@@ -135,7 +136,7 @@ class App extends Component {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              レターパックラベルを一括作成！
+              レターパックラベルを一括作成
             </Typography>
             <IconButton color="inherit">
               <Notifications />
@@ -151,6 +152,27 @@ class App extends Component {
           justify="space-between"
           style={{ padding: '10px 0' }}
         >
+          <Grid
+            item
+            xs={12}
+            style={{
+              borderBottom: '1px solid #eee',
+            }}
+          >
+            <Typography style={{ marginLeft: 5, fontWeight: 'bold', display: 'inline' }}>
+              <FiberNew style={{ color: '#f4364c', animation: 'good 1s linear 3s 3' }} />
+              本サービスをベースに様々な種類のラベル対応+プレビュー画面を追加したVersionを開発しました！
+              是非チェックして見てください！
+            </Typography>
+            <a
+              style={{ marginLeft: 5 }}
+              href="https://athenalabel.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              https://athenalabel.com
+            </a>
+          </Grid>
           <Grid item xs={12} sm={5}>
             <Typography style={{ marginLeft: 5 }} variant="caption">
               ・動作環境
@@ -167,7 +189,9 @@ class App extends Component {
             <Typography style={{ marginLeft: 5 }} variant="caption">
               ＊全角数字利用不可
               <br />
-              ＊郵便番号は半角数字7桁
+              ＊郵便番号は半角数字7桁(
+              <span style={{ color: 'red' }}>赤いセルはエラーです</span>
+              )
               <br />
               ＊おところが長い場合はAltを押しながらEnterを押すと改行可能
               <br />
