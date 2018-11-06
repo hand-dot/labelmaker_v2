@@ -156,13 +156,19 @@ class App extends Component {
             item
             xs={12}
             style={{
-              borderBottom: '1px solid #eee',
+              borderBottom: '1px solid rgba(244, 54, 76, 0.34)',
             }}
           >
-            <Typography style={{ marginLeft: 5, fontWeight: 'bold', display: 'inline' }}>
-              <FiberNew style={{ color: '#f4364c', animation: 'good 1s linear 3s 3' }} />
-              本サービスをベースに様々な種類のラベル対応+プレビュー画面を追加したVersionを開発しました！
-              是非チェックして見てください！
+            <Typography style={{
+              position: 'relative', paddingLeft: 25, marginLeft: 5, fontWeight: 'bold', display: 'inline',
+            }}
+            >
+              <FiberNew style={{
+                position: 'absolute', left: 0, color: '#f4364c', animation: 'good 1s linear 3s 3',
+              }}
+              />
+              本サービスをベースに様々な種類のラベル対応+プレビュー画面を追加した新Versionを開発しました！
+              是非チェックしてみてください！👉
             </Typography>
             <a
               style={{ marginLeft: 5 }}
