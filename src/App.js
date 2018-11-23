@@ -172,11 +172,11 @@ class App extends Component {
             </Typography>
             <a
               style={{ marginLeft: 5 }}
-              href="https://athenalabel.com"
+              href="https://labelmake.jp"
               target="_blank"
               rel="noreferrer noopener"
             >
-              https://athenalabel.com
+              https://labelmake.jp
             </a>
           </Grid>
           <Grid item xs={12} sm={5}>
